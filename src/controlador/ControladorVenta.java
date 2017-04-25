@@ -10,7 +10,7 @@ import modelo.Venta;
 
 public class ControladorVenta {
    
-    public void Agregar(Venta v) throws SQLException, ClassNotFoundException, ErrorTienda, ErrorTienda {
+   public void Agregar(Venta v) throws SQLException, ClassNotFoundException, ErrorTienda, ErrorTienda {
         Conexion cn = new Conexion();
         try{
         cn.conectar();
@@ -24,19 +24,6 @@ public class ControladorVenta {
         
     }
     
-     
-   /* public ResultSet ObtenerIdVenta(int IdVenta) throws SQLException, ClassNotFoundException, ErrorTienda, ErrorTienda {
-        Conexion cn = new Conexion();
-        try{
-        cn.conectar();
-        return( cn.getValores("SELECT IdVenta, Total FROM venta WHERE IdVenta= '"+IdVenta+"'"));
-        
-        } catch (Exception ex){
-            throw new ErrorTienda("Obtener IdVenta" + ex.getMessage());             
-        }finally{
-            cn.desconectar();
-            }
-    }*/
         public Integer ObtenerIdVenta() throws SQLException, ClassNotFoundException, ErrorTienda, ErrorTienda {
         Integer latestId=0;
         Conexion cn = new Conexion();
@@ -55,15 +42,26 @@ public class ControladorVenta {
         }
 
     
-    public void ActulizarInventario(DetalleVenta v) throws SQLException, ClassNotFoundException, ErrorTienda, ErrorTienda {
+    public void ActulizarInventario(DetalleVenta[] ARTICULO) throws SQLException, ClassNotFoundException, ErrorTienda, ErrorTienda {
         
         Conexion cn = new Conexion();
         try{
         cn.conectar();
-        cn.UID("UPDATE producto SET codBarra='" + v.getProducto().getCodBarra() + "',Cantidadr='" + v.getCantidad() + "',PrecioUnitario='" + v.getPrecioUnitario()+"'");
-        cn.desconectar();
+
+        for(int i=0;i<ARTICULO.length;i++){
+          //se resta la cantidad de la BD - la cantidad  del detalle venta
+          ResultSet rsProducto = null;
+          rsProducto = cn.getValores("SELECT Inventario FROM producto WHERE CodBarra = '"+ARTICULO[i].getProducto().getCodBarra() +"'");
+          int cantidad = Integer.parseInt(rsProducto.toString());
+          cantidad = cantidad - ARTICULO[i].getCantidad();
+          
+          //se actuliza la cantidad 
+          cn.UID("UPDATE producto SET Inventario='" + cantidad +"' WHERE CodBarra= '" + ARTICULO[i].getProducto().getCodBarra() + "'");
+         
+        }
+      
         } catch (Exception ex){
-            throw new ErrorTienda("Actulizar" + ex.getMessage()); 
+            throw new ErrorTienda("Actualizar" + ex.getMessage()); 
         
         }finally{
             cn.desconectar();
