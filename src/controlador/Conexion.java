@@ -6,14 +6,19 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 
 public class Conexion {
-
+/*
     static Connection GetConnection() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+*/
+    private Connection conexion;
+    private String error = null;
     
     private String url = "jdbc:mysql://172.17.0.2:3306/tienda";
     private String login = "root"; //Administrador de MySQL
@@ -56,16 +61,34 @@ public class Conexion {
     }
 
     public void desconectar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   
+    try {
 
+          conexion.close();
+        } catch (SQLException ex) {
+
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+/*
     public void conectar() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    void close() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+*/
+     public Connection conectar()
+    {
+        
+        Connection link =null;
+        try
+        {
+          Class.forName("com.mysql.jdbc.Driver");  //nombre dle driver
+          link =DriverManager.getConnection(url,login,password);//pasar como parametros la cadena conexion
+        }
+         catch (Exception e) {
+             JOptionPane.showMessageDialog(null,"ha fallado "+ e);
+        }
+        return link;
     }
-
-
+ 
 }

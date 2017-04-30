@@ -18,7 +18,7 @@ public class cnMYSQL {
 
     public cnMYSQL() throws Exception{
         Class.forName("com.mysql.jdbc.Driver");
-        connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/tienda2","root","pelon1976");
+        connection=DriverManager.getConnection("jdbc:mysql://172.17.0.2:3306/tienda","root","1234");
     }
     public static cnMYSQL getIntance() throws Exception{
         if(instance==null){

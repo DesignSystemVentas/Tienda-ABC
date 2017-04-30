@@ -1,14 +1,21 @@
 
 package frame;
 
+import controlador.Conexion;
 import java.awt.Color;
 import java.awt.Font;
 import java.math.BigInteger;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.RowSorter;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -20,6 +27,12 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     boolean apagado, principal;
     int x,y;
     JTableHeader tHeadVentas,tHeadCompras,tHeadProductos,tHeadCompra,tHeadProveedores,tHeadDetalleCompra;
+    
+    //Datos para compra
+    String datosCompra[] = new String[4];
+    ResultSet rsCompra =null;
+    ResultSet rs = null;
+    DefaultTableModel modeloCompra = new DefaultTableModel();
     
     public JFRPrincipal() {
         initComponents();
@@ -42,6 +55,78 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         Ventas(false);
         Productos(false);
         Proveedores(false);
+        
+        //llenado de tabla Compra  
+        modeloCompra.addColumn("ID Compra");
+        modeloCompra.addColumn("Proveedor");
+        modeloCompra.addColumn("Fecha");
+        modeloCompra.addColumn("Total");
+ 
+        tblCompras.setModel(modeloCompra);
+        RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(modeloCompra);
+        tblCompras.setRowSorter(sorter);
+        llenarTablaCompra();
+        tblCompras.getRowSorter().toggleSortOrder(0); 
+        
+        
+       
+    }
+    
+    private void clearTableCompra(){
+         
+       for (int i = 0; i < tblCompra.getRowCount(); i++) {
+           modeloCompra.removeRow(i);
+           i-=1;
+       }
+    }
+    
+    //este metodo deberia de ir en controlador, pero calvito no quiere
+    public ResultSet llenarTablaCompraSql() {
+        Conexion cn = new Conexion();
+        try{
+        return (cn.getValores("SELECT IdCompra, Fecha, IdProveedor, Total FROM compra"));   
+        }catch(Exception e)
+        {
+          return null;  
+        }finally{ 
+        //    cn.desconectar();
+        }
+    }
+    
+    public ResultSet buscarProveedor(String idProveedor)
+    {   Conexion cn = new Conexion();
+        return( cn.getValores("SELECT  idProveedor, Nombre, Telefono, Direccion, NIT FROM proveedor WHERE idProveedor = '"+idProveedor+"'"));
+    }
+    
+    public void llenarTablaCompra()
+    {
+        //clearTableCompra();
+         
+          try {
+            String carne="";
+            String idProveedor="";
+            rsCompra = llenarTablaCompraSql();
+            
+
+            while (rsCompra.next()) {//tablas base de datos
+                //tabla de compra
+                datosCompra[0] = rsCompra.getString(1);
+                datosCompra[2] = rsCompra.getString(2);      
+                datosCompra[3] = rsCompra.getString(4);
+                
+                idProveedor= rsCompra.getString(3);    
+                //tabla de proveedor    
+                rs= buscarProveedor(idProveedor);
+                while(rs.next()){
+                datosCompra[1] = rs.getString(2);
+                }
+              
+                modeloCompra.addRow(datosCompra);
+               
+            } 
+        }catch (SQLException ex) {
+            JOptionPane.showMessageDialog(rootPane, ex.getMessage(), "Error", 0);
+        }
     }
     
     /*  ---- Color a las cabeceras de las tablas ----  */
@@ -360,7 +445,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jpnBarraSuperior.setBackground(new java.awt.Color(0, 0, 0));
-        jpnBarraSuperior.setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));
+        jpnBarraSuperior.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jpnBarraSuperior.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
                 jpnBarraSuperiorMouseDragged(evt);
@@ -375,7 +460,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
 
         lblBotonCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/exit32.png"))); // NOI18N
         lblBotonCerrar.setToolTipText("Salir");
-        lblBotonCerrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblBotonCerrar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lblBotonCerrar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblBotonCerrarMouseClicked(evt);
@@ -399,7 +484,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnSubMenu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnCompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/compras.png"))); // NOI18N
-        btnCompras.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCompras.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnCompras.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnComprasMouseClicked(evt);
@@ -419,7 +504,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnSubMenu.add(btnCompras, new org.netbeans.lib.awtextra.AbsoluteConstraints(-126, 20, 180, 40));
 
         btnProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/productos.png"))); // NOI18N
-        btnProductos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnProductos.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnProductos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnProductosMouseClicked(evt);
@@ -434,7 +519,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnSubMenu.add(btnProductos, new org.netbeans.lib.awtextra.AbsoluteConstraints(-126, 120, 180, 40));
 
         btnVentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/ventas.png"))); // NOI18N
-        btnVentas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVentas.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnVentas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnVentasMouseClicked(evt);
@@ -449,7 +534,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnSubMenu.add(btnVentas, new org.netbeans.lib.awtextra.AbsoluteConstraints(-126, 70, 180, 40));
 
         btnProveedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/proveedores.png"))); // NOI18N
-        btnProveedores.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnProveedores.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnProveedores.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnProveedoresMouseClicked(evt);
@@ -472,7 +557,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
 
         btnHome.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/Home48.png"))); // NOI18N
         btnHome.setToolTipText("Inicio");
-        btnHome.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnHome.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnHome.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnHomeMouseClicked(evt);
@@ -657,7 +742,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnEliminarProveedor.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnEliminarProveedor.setForeground(new java.awt.Color(255, 255, 255));
         btnEliminarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/eliminar.png"))); // NOI18N
-        btnEliminarProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEliminarProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnEliminarProveedor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnEliminarProveedorMouseEntered(evt);
@@ -672,7 +757,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnAgregarProveedor.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnAgregarProveedor.setForeground(new java.awt.Color(255, 255, 255));
         btnAgregarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/agregarprov.png"))); // NOI18N
-        btnAgregarProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAgregarProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAgregarProveedor.setFocusCycleRoot(true);
         btnAgregarProveedor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -691,7 +776,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnModificarProveedor.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnModificarProveedor.setForeground(new java.awt.Color(255, 255, 255));
         btnModificarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/modificar.png"))); // NOI18N
-        btnModificarProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnModificarProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnModificarProveedor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnModificarProveedorMouseClicked(evt);
@@ -757,19 +842,24 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnAgregarProv.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnGuardarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/guardarprov.png"))); // NOI18N
-        btnGuardarProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardarProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardarProveedor.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnGuardarProveedorMouseExited(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnGuardarProveedorMouseEntered(evt);
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnGuardarProveedorMouseExited(evt);
+        });
+        btnGuardarProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarProveedorActionPerformed(evt);
             }
         });
         jpnAgregarProv.add(btnGuardarProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 480, 110, 30));
 
         btnAtrasProveedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/atras.png"))); // NOI18N
-        btnAtrasProveedores.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAtrasProveedores.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAtrasProveedores.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnAtrasProveedoresMouseClicked(evt);
@@ -785,7 +875,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnAgregarProv.add(txtDireccionProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 290, 410, 30));
         jpnAgregarProv.add(txtNIT, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 350, 230, 30));
 
-        txtNombreProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txtNombreProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jpnAgregarProv.add(txtNombreProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 170, 410, 30));
         jpnAgregarProv.add(txtTelefonoProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 230, 230, 30));
 
@@ -835,7 +925,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnModificarProveedor.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnGuardarModificarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/guardarprov.png"))); // NOI18N
-        btnGuardarModificarProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardarModificarProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardarModificarProveedor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnGuardarModificarProveedorMouseEntered(evt);
@@ -847,7 +937,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnModificarProveedor.add(btnGuardarModificarProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 500, 110, 30));
 
         btnAtrasModificarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/atras.png"))); // NOI18N
-        btnAtrasModificarProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAtrasModificarProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAtrasModificarProveedor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnAtrasModificarProveedorMouseClicked(evt);
@@ -863,7 +953,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnModificarProveedor.add(txtNuevoDireccionProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 310, 410, 30));
         jpnModificarProveedor.add(txtNuevoNIT, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 400, 230, 30));
 
-        txtNuevoNombreProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txtNuevoNombreProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jpnModificarProveedor.add(txtNuevoNombreProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 130, 410, 30));
         jpnModificarProveedor.add(txtNuevoTelefonoProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 220, 230, 30));
 
@@ -993,7 +1083,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
 
         btnVender.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         btnVender.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/vender.png"))); // NOI18N
-        btnVender.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVender.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnVender.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnVenderMouseEntered(evt);
@@ -1006,7 +1096,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
 
         btnEliminarProductoVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/eliminar.png"))); // NOI18N
         btnEliminarProductoVenta.setToolTipText("Eliminar Productos Seleccionados");
-        btnEliminarProductoVenta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEliminarProductoVenta.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnEliminarProductoVenta.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnEliminarProductoVentaMouseEntered(evt);
@@ -1019,7 +1109,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
 
         btnBuscarProductoVenta.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscarProductoVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/buscar.png"))); // NOI18N
-        btnBuscarProductoVenta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBuscarProductoVenta.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscarProductoVenta.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnBuscarProductoVentaMouseEntered(evt);
@@ -1044,7 +1134,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
 
         btnAgregarProductoVenta.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         btnAgregarProductoVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/agregar2.png"))); // NOI18N
-        btnAgregarProductoVenta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAgregarProductoVenta.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAgregarProductoVenta.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnAgregarProductoVentaMouseEntered(evt);
@@ -1135,13 +1225,13 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         tblCompras.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         tblCompras.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Compra 1", "Pollo Indio", "12/Febrero/17", "$23.00"},
-                {"Compra 2", null, null, null},
-                {"Compra 3", null, null, null},
-                {"Compra 4", null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Id Compra", "Proveedor", "Fecha", "Total"
+
             }
         ));
         tblCompras.getTableHeader().setReorderingAllowed(false);
@@ -1150,7 +1240,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnCompras.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, 660, 310));
 
         btnAgregarCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/agregar.png"))); // NOI18N
-        btnAgregarCompra.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAgregarCompra.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAgregarCompra.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnAgregarCompraMouseEntered(evt);
@@ -1167,7 +1257,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnCompras.add(btnAgregarCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 490, 110, 30));
 
         btnVerDetalle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/detalles2.png"))); // NOI18N
-        btnVerDetalle.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVerDetalle.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnVerDetalle.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnVerDetalleMouseClicked(evt);
@@ -1205,7 +1295,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnRegistroCompra.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/guardarprov.png"))); // NOI18N
-        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnGuardarMouseEntered(evt);
@@ -1217,7 +1307,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnRegistroCompra.add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 540, 110, 30));
 
         btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/atras.png"))); // NOI18N
-        btnCancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnCancelarMouseClicked(evt);
@@ -1368,7 +1458,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnNuevoProducto.setBackground(new java.awt.Color(0, 0, 0));
         btnNuevoProducto.setForeground(new java.awt.Color(255, 255, 255));
         btnNuevoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/nuevo3.png"))); // NOI18N
-        btnNuevoProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNuevoProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnNuevoProducto.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnNuevoProductoMouseEntered(evt);
@@ -1387,7 +1477,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnBuscarProducto.setBackground(new java.awt.Color(0, 0, 0));
         btnBuscarProducto.setForeground(new java.awt.Color(255, 255, 255));
         btnBuscarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/buscar.png"))); // NOI18N
-        btnBuscarProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBuscarProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscarProducto.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnBuscarProductoMouseEntered(evt);
@@ -1399,7 +1489,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnProductos.add(btnBuscarProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 110, 110, 30));
 
         btnModificarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/modificar.png"))); // NOI18N
-        btnModificarProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnModificarProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnModificarProducto.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnModificarProductoMouseEntered(evt);
@@ -1411,7 +1501,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnProductos.add(btnModificarProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 510, 110, 30));
 
         btnEliminarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/eliminar.png"))); // NOI18N
-        btnEliminarProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEliminarProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnEliminarProducto.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnEliminarProductoMouseEntered(evt);
@@ -1452,7 +1542,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnNuevoProducto.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnAgregarNuevoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/agregar2.png"))); // NOI18N
-        btnAgregarNuevoProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAgregarNuevoProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAgregarNuevoProducto.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnAgregarNuevoProductoMouseEntered(evt);
@@ -1464,7 +1554,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnNuevoProducto.add(btnAgregarNuevoProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 500, 110, 30));
 
         btnSalirProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/atras.png"))); // NOI18N
-        btnSalirProductos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSalirProductos.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnSalirProductos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnSalirProductosMouseEntered(evt);
@@ -1612,7 +1702,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnDetalleCompra.add(txtTotal2, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 530, 100, 40));
 
         btnAtrasDetalleCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/atras.png"))); // NOI18N
-        btnAtrasDetalleCompra.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAtrasDetalleCompra.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAtrasDetalleCompra.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnAtrasDetalleCompraMouseClicked(evt);
@@ -2021,6 +2111,10 @@ public final class JFRPrincipal extends javax.swing.JFrame {
             txtNombreProductos.requestFocus();
         }        // TODO add your handling code here:
     }//GEN-LAST:event_txtCodigoBarraVenderFocusGained
+
+    private void btnGuardarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProveedorActionPerformed
+       
+    }//GEN-LAST:event_btnGuardarProveedorActionPerformed
                                                                                                                                                                                                                               
     /**
      * @param args the command line arguments
