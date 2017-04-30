@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -33,6 +34,14 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     ResultSet rsCompra =null;
     ResultSet rs = null;
     DefaultTableModel modeloCompra = new DefaultTableModel();
+    
+    //Datos para cmbProveedor
+    boolean cargarProveedores=false;
+    ResultSet rsProveedor=null;
+    DefaultComboBoxModel modeloProveedor = new DefaultComboBoxModel();
+    DefaultComboBoxModel modeloProveedores = new DefaultComboBoxModel();//Es para mostrar los ID de los cargos
+
+    
     
     public JFRPrincipal() {
         initComponents();
@@ -71,9 +80,23 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         
        
     }
+    //******* PROVEEDORES  ********
+     
+    public ResultSet llenarProveedores() {
+        Conexion cn = new Conexion();
+        return (cn.getValores("SELECT * FROM proveedor"));
+    }
+   
+    public ResultSet buscarProveedor(String idProveedor)
+    {   Conexion cn = new Conexion();
+        return( cn.getValores("SELECT  idProveedor, Nombre, Telefono, Direccion, NIT FROM proveedor WHERE idProveedor = '"+idProveedor+"'"));
+    }
+    
+    
+    //******** COMPRAS *********
     
     private void clearTableCompra(){
-         
+       
        for (int i = 0; i < tblCompra.getRowCount(); i++) {
            modeloCompra.removeRow(i);
            i-=1;
@@ -93,17 +116,12 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         }
     }
     
-    public ResultSet buscarProveedor(String idProveedor)
-    {   Conexion cn = new Conexion();
-        return( cn.getValores("SELECT  idProveedor, Nombre, Telefono, Direccion, NIT FROM proveedor WHERE idProveedor = '"+idProveedor+"'"));
-    }
-    
+  
     public void llenarTablaCompra()
     {
         //clearTableCompra();
          
           try {
-            String carne="";
             String idProveedor="";
             rsCompra = llenarTablaCompraSql();
             
@@ -1242,11 +1260,11 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnAgregarCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/agregar.png"))); // NOI18N
         btnAgregarCompra.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAgregarCompra.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnAgregarCompraMouseEntered(evt);
-            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnAgregarCompraMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnAgregarCompraMouseEntered(evt);
             }
         });
         btnAgregarCompra.addActionListener(new java.awt.event.ActionListener() {
@@ -1324,7 +1342,21 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         txtIdCompra.setText("001");
         jpnRegistroCompra.add(txtIdCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 70, 60, 30));
 
-        cmbProveedor.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Pollo Indio", "SONY", "Niña Mirna" }));
+        cmbProveedor.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbProveedorItemStateChanged(evt);
+            }
+        });
+        cmbProveedor.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cmbProveedorFocusGained(evt);
+            }
+        });
+        cmbProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbProveedorActionPerformed(evt);
+            }
+        });
         jpnRegistroCompra.add(cmbProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 70, 180, 30));
 
         tblCompra =new javax.swing.JTable(){
@@ -1840,6 +1872,8 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     private void btnAgregarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarCompraActionPerformed
         jpnRegistroCompra.setVisible(true);
         jpnCompras.setVisible(false);
+        cargarProveedores=true;
+        
     }//GEN-LAST:event_btnAgregarCompraActionPerformed
 
     private void btnVerDetalleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVerDetalleMouseClicked
@@ -2115,6 +2149,33 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     private void btnGuardarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProveedorActionPerformed
        
     }//GEN-LAST:event_btnGuardarProveedorActionPerformed
+
+    private void cmbProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbProveedorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbProveedorActionPerformed
+
+    private void cmbProveedorFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cmbProveedorFocusGained
+     if (cargarProveedores==true){
+                 //Llenando el cmbCargos mediante un modelo
+            try{
+            rsProveedor = llenarProveedores();
+            while (rsProveedor.next()) {
+                modeloProveedor.addElement(rsProveedor.getString(2));
+                
+            }
+            cmbProveedor.setModel(modeloProveedor);
+           // lblCargo.setText(String.valueOf(modeloCargos.getElementAt(0)));
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(rootPane, ex.getMessage(), "Error", 0);
+        }
+        cargarProveedores=false;    
+   
+        }
+    }//GEN-LAST:event_cmbProveedorFocusGained
+
+    private void cmbProveedorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbProveedorItemStateChanged
+      int posicion=cmbProveedor.getSelectedIndex();     
+    }//GEN-LAST:event_cmbProveedorItemStateChanged
                                                                                                                                                                                                                               
     /**
      * @param args the command line arguments
