@@ -2,12 +2,21 @@
 package frame;
 
 import controlador.Conexion;
+import controlador.ControladorCompra;
+import controlador.ErrorTienda;
+import static frame.JFRPrincipal.getFechaActual;
 import java.awt.Color;
 import java.awt.Font;
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -17,6 +26,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import modelo.Compra;
+import modelo.DetalleCompra;
+import modelo.Producto;
+import modelo.Proveedor;
 
 /**
  *
@@ -34,6 +47,8 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     ResultSet rsCompra =null;
     ResultSet rs = null;
     DefaultTableModel modeloCompra = new DefaultTableModel();
+    int cantidad =0;
+    int mayor =0;
     
     //Datos para cmbProveedor
     boolean cargarProveedores=false;
@@ -1315,11 +1330,16 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/guardarprov.png"))); // NOI18N
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnGuardarMouseExited(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnGuardarMouseEntered(evt);
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnGuardarMouseExited(evt);
+        });
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
             }
         });
         jpnRegistroCompra.add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 540, 110, 30));
@@ -1339,7 +1359,12 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         });
         jpnRegistroCompra.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 540, 110, 30));
 
-        txtIdCompra.setText("001");
+        txtIdCompra.setEditable(false);
+        txtIdCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIdCompraActionPerformed(evt);
+            }
+        });
         jpnRegistroCompra.add(txtIdCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 70, 60, 30));
 
         cmbProveedor.addItemListener(new java.awt.event.ItemListener() {
@@ -1381,6 +1406,8 @@ public final class JFRPrincipal extends javax.swing.JFrame {
 
         txtTotal.setText("$");
         jpnRegistroCompra.add(txtTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 500, 100, 40));
+
+        txtFecha.setEditable(false);
         jpnRegistroCompra.add(txtFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 120, 160, 30));
 
         jPanel39.setBackground(new java.awt.Color(0, 0, 0));
@@ -1869,10 +1896,57 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnProductos.setVisible(true);
     }//GEN-LAST:event_btnProductosMouseClicked
 
+  
+    private String getDateTime() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
     private void btnAgregarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarCompraActionPerformed
         jpnRegistroCompra.setVisible(true);
         jpnCompras.setVisible(false);
         cargarProveedores=true;
+       
+        /*
+        ControladorCompra c = new ControladorCompra();
+        try {
+            int nuevoId = c.ObtenerIdCompra()+1;
+            txtIdCompra.setText(String.valueOf(nuevoId));
+        } catch (SQLException | ClassNotFoundException | ErrorTienda ex) {
+            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+        Conexion cn = new Conexion();
+        cn.conectar();
+        rs = null;
+        rs =  cn.getValores("SELECT COUNT(IdCompra) FROM compra");
+       
+        try {
+            while (rs.next()) {
+                cantidad = rs.getInt(1);
+                if (cantidad != 0) {
+                    rs = null;
+                    //método en clase Empleados
+                    rs = cn.getValores("SELECT MAX(idCompra) FROM compra");
+                    while (rs.next()) {
+                        mayor = rs.getInt(1) + 1;
+                        //recuerde que debe completar 2 digitos
+                        if (mayor < 10) {
+                            txtIdCompra.setText("0" + mayor);
+                        } 
+                         else {
+                             txtIdCompra.setText("" + mayor);
+                        }
+                    }
+                } else {
+                     txtIdCompra.setText("0"+1);
+                }
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(rootPane, ex.getMessage(), "AVISO DEL SISTEMA", 0);
+        }
+        
+       // java.util.Date fechaActual = new java.util.Date();
+        txtFecha.setText(getDateTime());
         
     }//GEN-LAST:event_btnAgregarCompraActionPerformed
 
@@ -2155,7 +2229,8 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_cmbProveedorActionPerformed
 
     private void cmbProveedorFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cmbProveedorFocusGained
-     if (cargarProveedores==true){
+        modeloProveedor.removeAllElements();
+        if (cargarProveedores==true){
                  //Llenando el cmbCargos mediante un modelo
             try{
             rsProveedor = llenarProveedores();
@@ -2176,6 +2251,54 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     private void cmbProveedorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbProveedorItemStateChanged
       int posicion=cmbProveedor.getSelectedIndex();     
     }//GEN-LAST:event_cmbProveedorItemStateChanged
+ 
+    public static String getFechaActual() {
+        Date ahora = new Date();
+        SimpleDateFormat formateador = new SimpleDateFormat("dd-MM-yyyy");
+        return formateador.format(ahora);
+    }
+    
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+       ControladorCompra cc = new ControladorCompra();
+       DetalleCompra dc = new DetalleCompra();
+       Producto p = new Producto();
+       Compra c = new Compra();
+       Proveedor pr = new Proveedor();
+       
+       java.util.Date fechaActual = new java.util.Date();
+       
+       
+       
+       //En esta seccion llenamos de datos los campos necesarios para que funcione el metodo AgregarItem()
+       dc.setCostoUnitario(Double.parseDouble(txtCostoProd.toString()));
+       dc.setCantidad(Integer.parseInt(txtCantidad.toString()));
+       
+       p.setCodBarra(txtCodBarraProd.toString());
+       p.setNombre(txtNomProd.toString());
+       dc.setPRODUCTO(p);
+       
+       c.setIdCompra(Integer.parseInt(txtIdCompra.toString()));
+       c.setFecha((java.sql.Date) fechaActual);
+       pr.setNombre(cmbProveedor.getSelectedItem().toString());
+       c.setPROVEEDOR(pr);
+       
+        try {
+            c.AgregarItem(dc);
+            txtTotal.setText(c.getTotal().toString());
+        } catch (ErrorTienda ex) {
+            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+               
+        try {
+            cc.Agregar(c);
+        } catch (SQLException | ClassNotFoundException | ErrorTienda ex) {
+            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void txtIdCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdCompraActionPerformed
+   
+    }//GEN-LAST:event_txtIdCompraActionPerformed
                                                                                                                                                                                                                               
     /**
      * @param args the command line arguments
