@@ -22,6 +22,8 @@ public class Parametro {
     
     }
 
+   
+
     public String getIdParamatro() {
         return IdParamatro;
     }
@@ -46,7 +48,7 @@ public class Parametro {
         this.Valor = Valor;
     }
     
-    public static List<Parametro> Obtener() throws Exception {
+    public List Obtener() throws Exception {
     Conexion cn = new Conexion();
      List<Parametro> Lista = new ArrayList<>();
         try{
@@ -67,7 +69,7 @@ public class Parametro {
        return Lista; 
     }
     
-    public static Parametro obtenerUtilidad() throws Exception{
+    public Parametro obtenerUtilidad() throws Exception{
      Conexion cn= new Conexion();
      Parametro prm = new Parametro();
      String datos[] = new String[1];

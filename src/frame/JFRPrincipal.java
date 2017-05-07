@@ -4,6 +4,8 @@ package frame;
 import controlador.Conexion;
 import controlador.ControladorCompra;
 import controlador.ErrorTienda;
+import controlador.ControladorProducto;
+import controlador.ControladorProveedor;
 import static frame.JFRPrincipal.getFechaActual;
 import java.awt.Color;
 import java.awt.Font;
@@ -13,7 +15,9 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,8 +32,10 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import modelo.Compra;
 import modelo.DetalleCompra;
+import modelo.Parametro;
 import modelo.Producto;
 import modelo.Proveedor;
+import sun.awt.X11.XConstants;
 
 /**
  *
@@ -39,6 +45,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
 
     boolean ventas, compras, productos, proveedores;
     boolean apagado, principal;
+    boolean modificarProducto;
     int x,y;
     JTableHeader tHeadVentas,tHeadCompras,tHeadProductos,tHeadCompra,tHeadProveedores,tHeadDetalleCompra;
     
@@ -56,7 +63,8 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     DefaultComboBoxModel modeloProveedor = new DefaultComboBoxModel();
     DefaultComboBoxModel modeloProveedores = new DefaultComboBoxModel();//Es para mostrar los ID de los cargos
 
-    
+    DefaultTableModel modeloBusquedaProductos;
+    DefaultTableModel modeloTablaProveedor;
     
     public JFRPrincipal() {
         initComponents();
@@ -92,8 +100,15 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         llenarTablaCompra();
         tblCompras.getRowSorter().toggleSortOrder(0); 
         
-        
-       
+        String []encabezado={"Codigo Barra","Inventario","Costo", "Nombre"};
+        Object dato[][]={};
+        modeloBusquedaProductos=new DefaultTableModel(dato,encabezado);
+        jtblProductos.setModel(modeloBusquedaProductos);
+
+       String []encabezadoProveedor={"IdProveedor","Nombre","Telefono", "Dirección", "NIT"};
+        Object datoProveedor[][]={};
+        modeloTablaProveedor=new DefaultTableModel(datoProveedor,encabezadoProveedor);
+        tblProveedores.setModel(modeloTablaProveedor);
     }
     //******* PROVEEDORES  ********
      
@@ -161,7 +176,107 @@ public final class JFRPrincipal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, ex.getMessage(), "Error", 0);
         }
     }
+    public ResultSet llenarTablaBuscarProductoSql(String codigo) {
+        Conexion cn = new Conexion();
+        try{
+        return (cn.getValores(("SELECT * FROM productos where CodBarra="+codigo+";")));  
+        }catch(Exception e)
+        {
+          return null;  
+        }finally{ 
+        //cn.desconectar();
+        }
+    }
+        public ResultSet llenarTablaProveedor(String codigoProv) {
+        Conexion cn = new Conexion();
+        try{
+        return (cn.getValores(("SELECT * FROM proveedor where IdProveedor='"+codigoProv+"';")));  
+        }catch(Exception e)
+        {
+          return null;  
+        }finally{ 
+        //cn.desconectar();
+        }
+    }
     
+  public void limpiarTablaBuscarProducto(){
+  
+  for (int i = 0; i < jtblProductos.getRowCount(); i++) {
+           modeloBusquedaProductos.removeRow(i);
+           i-=1;
+       }
+  }
+  public void limpiarTablaProveedores(){
+  
+  for (int i = 0; i < tblProveedores.getRowCount(); i++) {
+           modeloTablaProveedor.removeRow(i);
+           i-=1;
+       }
+  }
+    public void llenarTablaBuscarProducto(String codigo) throws SQLException{
+        //clearTableCompra();
+        limpiarTablaBuscarProducto();
+          rs=null;    
+        rs = llenarTablaBuscarProductoSql(codigo);
+         //String []encabezado={"Codigo","Nombre","Primer apellido","Segundo Apellido", "Edad", "Direccion", "Telefono"};
+         if (!rs.isBeforeFirst()) {    
+    JOptionPane.showMessageDialog(null, "El producto no existe"); 
+}    else{
+             txtProductosBuscar.setText("");
+         try {
+            while (rs.next()) {
+                String Codigo = rs.getString("CodBarra");
+                String inventario = rs.getString("Inventario");
+                String costo = rs.getString("Costo");
+                String nombre = rs.getString("nombre");
+                modeloBusquedaProductos.addRow(new String[]{Codigo,inventario,costo,nombre});
+                System.out.println("puso el modelo");
+                //modelo.addRow(rs.getString(1));
+
+            }
+        } catch (Exception e) {
+        }
+        
+        jtblProductos.setModel(modeloBusquedaProductos);
+         
+         }
+        
+    }
+
+    
+    
+    
+    public void llenarTablaProveedores(String codigoProv) throws SQLException{
+        //clearTableCompra();
+        limpiarTablaProveedores();
+          rs=null;    
+        rs = llenarTablaProveedor(codigoProv);
+         //String []encabezado={"Codigo","Nombre","Primer apellido","Segundo Apellido", "Edad", "Direccion", "Telefono"};
+         if (!rs.isBeforeFirst()) {    
+    
+}    else{
+             
+         try {
+            while (rs.next()) {
+                String id = rs.getString("IdProveedor");
+                String nombre = rs.getString("Nombre");
+                String telefono = rs.getString("Telefono");
+                String direccion = rs.getString("Direccion");
+                String nit = rs.getString("NIT");
+                modeloTablaProveedor.addRow(new String[]{id, nombre, telefono, direccion, nit});
+                System.out.println("puso el modelo a proveedor");
+                //modelo.addRow(rs.getString(1));
+
+            }
+        } catch (Exception e) {
+        }
+        
+        tblProveedores.setModel(modeloTablaProveedor);
+         
+         }
+        
+    }
+
     /*  ---- Color a las cabeceras de las tablas ----  */
     public void cabezera(){
         Font fuente = new Font("Tahoma", Font.BOLD, 12);
@@ -299,7 +414,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         lblProveedores6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jSeparator21 = new javax.swing.JSeparator();
-        txtProductosBuscar1 = new javax.swing.JTextField();
+        txtProveedorBuscar = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jSeparator38 = new javax.swing.JSeparator();
         jpnAgregarProv = new javax.swing.JPanel();
@@ -777,11 +892,16 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnEliminarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/eliminar.png"))); // NOI18N
         btnEliminarProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnEliminarProveedor.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnEliminarProveedorMouseExited(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnEliminarProveedorMouseEntered(evt);
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnEliminarProveedorMouseExited(evt);
+        });
+        btnEliminarProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarProveedorActionPerformed(evt);
             }
         });
         jpnProveedores.add(btnEliminarProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 520, 110, 30));
@@ -862,7 +982,16 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jLabel7.setText("Listado de los Proveedores actuales:");
         jpnProveedores.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 175, -1, -1));
         jpnProveedores.add(jSeparator21, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 190, 230, -1));
-        jpnProveedores.add(txtProductosBuscar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 670, 30));
+
+        txtProveedorBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtProveedorBuscarKeyTyped(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtProveedorBuscarKeyReleased(evt);
+            }
+        });
+        jpnProveedores.add(txtProveedorBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 670, 30));
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel4.setText("Proveedor a buscar:");
@@ -1144,11 +1273,16 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnBuscarProductoVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/buscar.png"))); // NOI18N
         btnBuscarProductoVenta.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscarProductoVenta.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnBuscarProductoVentaMouseExited(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnBuscarProductoVentaMouseEntered(evt);
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnBuscarProductoVentaMouseExited(evt);
+        });
+        btnBuscarProductoVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarProductoVentaActionPerformed(evt);
             }
         });
         jpnVentas.add(btnBuscarProductoVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 540, 110, 30));
@@ -1519,11 +1653,11 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnNuevoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/nuevo3.png"))); // NOI18N
         btnNuevoProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnNuevoProducto.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnNuevoProductoMouseEntered(evt);
-            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnNuevoProductoMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnNuevoProductoMouseEntered(evt);
             }
         });
         btnNuevoProducto.addActionListener(new java.awt.event.ActionListener() {
@@ -1538,11 +1672,16 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnBuscarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/buscar.png"))); // NOI18N
         btnBuscarProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnBuscarProducto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnBuscarProductoMouseExited(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnBuscarProductoMouseEntered(evt);
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnBuscarProductoMouseExited(evt);
+        });
+        btnBuscarProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarProductoActionPerformed(evt);
             }
         });
         jpnProductos.add(btnBuscarProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 110, 110, 30));
@@ -1550,11 +1689,16 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnModificarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/modificar.png"))); // NOI18N
         btnModificarProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnModificarProducto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnModificarProductoMouseExited(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnModificarProductoMouseEntered(evt);
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnModificarProductoMouseExited(evt);
+        });
+        btnModificarProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarProductoActionPerformed(evt);
             }
         });
         jpnProductos.add(btnModificarProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 510, 110, 30));
@@ -1562,11 +1706,16 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnEliminarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/eliminar.png"))); // NOI18N
         btnEliminarProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnEliminarProducto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnEliminarProductoMouseExited(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnEliminarProductoMouseEntered(evt);
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnEliminarProductoMouseExited(evt);
+        });
+        btnEliminarProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarProductoActionPerformed(evt);
             }
         });
         jpnProductos.add(btnEliminarProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 510, 110, 30));
@@ -1589,6 +1738,12 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jLabel15.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel15.setText("Listado de los Productos:");
         jpnProductos.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 170, -1, -1));
+
+        txtProductosBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtProductosBuscarActionPerformed(evt);
+            }
+        });
         jpnProductos.add(txtProductosBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 110, 430, 30));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -1603,11 +1758,16 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnAgregarNuevoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/agregar2.png"))); // NOI18N
         btnAgregarNuevoProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAgregarNuevoProducto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnAgregarNuevoProductoMouseExited(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnAgregarNuevoProductoMouseEntered(evt);
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnAgregarNuevoProductoMouseExited(evt);
+        });
+        btnAgregarNuevoProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarNuevoProductoActionPerformed(evt);
             }
         });
         jpnNuevoProducto.add(btnAgregarNuevoProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 500, 110, 30));
@@ -1615,11 +1775,11 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         btnSalirProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/atras.png"))); // NOI18N
         btnSalirProductos.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnSalirProductos.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnSalirProductosMouseEntered(evt);
-            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnSalirProductosMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnSalirProductosMouseEntered(evt);
             }
         });
         btnSalirProductos.addActionListener(new java.awt.event.ActionListener() {
@@ -1629,7 +1789,8 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         });
         jpnNuevoProducto.add(btnSalirProductos, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 500, 110, 30));
 
-        txtCodBarraProductos.setEditable(false);
+        txtCodBarraProductos.setDisabledTextColor(new java.awt.Color(255, 255, 255));
+        txtCodBarraProductos.setDoubleBuffered(true);
         txtCodBarraProductos.setOpaque(false);
         txtCodBarraProductos.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1880,11 +2041,17 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVentasMouseClicked
 
     private void btnNuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoProductoActionPerformed
+        modificarProducto=false;
         jpnProductos.setVisible(false);
         jpnNuevoProducto.setVisible(true);
+        
     }//GEN-LAST:event_btnNuevoProductoActionPerformed
 
     private void btnSalirProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirProductosActionPerformed
+            txtCodBarraProductos.setText("");
+            txtNombreProductos.setText("");
+            txtProductoInventario.setText("");
+            txtPrecioProductos.setText("");
             jpnNuevoProducto.setVisible(false);
             jpnProductos.setVisible(true);
     }//GEN-LAST:event_btnSalirProductosActionPerformed
@@ -2291,6 +2458,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
                
         try {
             cc.Agregar(c);
+            
         } catch (SQLException | ClassNotFoundException | ErrorTienda ex) {
             Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2299,7 +2467,160 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     private void txtIdCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdCompraActionPerformed
    
     }//GEN-LAST:event_txtIdCompraActionPerformed
-                                                                                                                                                                                                                              
+
+    private void btnBuscarProductoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarProductoVentaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBuscarProductoVentaActionPerformed
+
+    private void btnBuscarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarProductoActionPerformed
+        if(txtProductosBuscar.getText().isEmpty()){
+        JOptionPane.showMessageDialog(null, "Ingrese un codigo de producto a buscar");
+        txtProductosBuscar.requestFocus();
+        }else{
+        String codigo=txtProductosBuscar.getText();
+        ControladorProducto cp= new ControladorProducto();
+        try {
+           cp.Obtener(codigo); 
+           
+           llenarTablaBuscarProducto(codigo);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "no logra obtener el producto");
+            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        }
+    }//GEN-LAST:event_btnBuscarProductoActionPerformed
+
+    private void btnAgregarNuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarNuevoProductoActionPerformed
+            ControladorProducto cpp= new ControladorProducto();
+
+                String id = txtCodBarraProductos.getText();
+                int inventario = Integer.parseInt(txtProductoInventario.getText());
+                Double costo= Double.parseDouble(txtPrecioProductos.getText());
+                String nombre = txtNombreProductos.getText();
+                Object P[]={id,inventario, costo, nombre};
+         //       cpp.Agregar(P);
+       // Producto p= new Producto(id,inventario, costo, nombre);
+         try {
+            if(modificarProducto==true){
+             cpp.modificar(P);
+            txtCodBarraProductos.setText("");
+            txtNombreProductos.setText("");
+            txtProductoInventario.setText("");
+            txtPrecioProductos.setText("");
+            JOptionPane.showMessageDialog(null, "modificado con exito");
+            jpnNuevoProducto.setVisible(false);
+            jpnProductos.setVisible(true);
+            
+            
+            
+            }else{
+            cpp.Agregar(P);
+            txtCodBarraProductos.setText("");
+            txtNombreProductos.setText("");
+            txtProductoInventario.setText("");
+            txtPrecioProductos.setText("");
+            JOptionPane.showMessageDialog(null, "agregado con exito");
+            jpnNuevoProducto.setVisible(false);
+            jpnProductos.setVisible(true);
+            
+            }
+             
+             
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ErrorTienda ex) {
+            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnAgregarNuevoProductoActionPerformed
+
+    private void txtProductosBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProductosBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtProductosBuscarActionPerformed
+
+    private void btnEliminarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarProductoActionPerformed
+       ControladorProducto cpp= new ControladorProducto();
+        TableModel tableModel = jtblProductos.getModel();
+    Object mostrar=modeloBusquedaProductos.getValueAt(jtblProductos.getSelectedRow(), 0);     
+//    Object P[]={mostrar};
+    
+int decide=JOptionPane.showConfirmDialog(null, "Desea borrar el producto:" +modeloBusquedaProductos.getValueAt(jtblProductos.getSelectedRow(), 3));
+
+
+if(decide==0){
+ try {
+               cpp.eliminar(mostrar);
+               JOptionPane.showMessageDialog(null,"Se elimino el producto" +mostrar);
+               limpiarTablaBuscarProducto();
+           } catch (SQLException ex) {
+               Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+           } catch (ClassNotFoundException ex) {
+               Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+           } catch (ErrorTienda ex) {
+               Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+           }
+
+}else{
+}
+
+    }//GEN-LAST:event_btnEliminarProductoActionPerformed
+
+    private void btnModificarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarProductoActionPerformed
+                ControladorProducto cpp= new ControladorProducto();
+               modificarProducto=true;
+                String id = modeloBusquedaProductos.getValueAt(jtblProductos.getSelectedRow(), 0).toString();
+                String inventario = modeloBusquedaProductos.getValueAt(jtblProductos.getSelectedRow(), 1).toString();
+                String costo= modeloBusquedaProductos.getValueAt(jtblProductos.getSelectedRow(), 2).toString();
+                String nombre = modeloBusquedaProductos.getValueAt(jtblProductos.getSelectedRow(), 3).toString();
+            txtCodBarraProductos.setText(""+id);
+            txtNombreProductos.setText(""+nombre);
+            txtProductoInventario.setText(""+inventario);
+            txtPrecioProductos.setText(""+costo);
+                jpnProductos.setVisible(false);
+                jpnNuevoProducto.setVisible(true);
+    }//GEN-LAST:event_btnModificarProductoActionPerformed
+
+    private void btnEliminarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarProveedorActionPerformed
+        ControladorProveedor cpro= new ControladorProveedor();
+        TableModel tableModel = tblProveedores.getModel();
+    Object mostrar=modeloTablaProveedor.getValueAt(tblProveedores.getSelectedRow(), 0);     
+//    Object P[]={mostrar};
+    
+int decide=JOptionPane.showConfirmDialog(null, "Desea borrar el proveedor:" +modeloTablaProveedor.getValueAt(tblProveedores.getSelectedRow(), 1));
+
+
+if(decide==0){
+ try {
+               cpro.eliminarProveedor(mostrar);
+               JOptionPane.showMessageDialog(null,"Se elimino el producto" +mostrar);
+               limpiarTablaBuscarProducto();
+           } catch (SQLException ex) {
+               Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+           } catch (ClassNotFoundException ex) {
+               Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+           } catch (ErrorTienda ex) {
+               Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+           }
+
+}else{
+}
+
+    }//GEN-LAST:event_btnEliminarProveedorActionPerformed
+
+    private void txtProveedorBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProveedorBuscarKeyTyped
+        
+    }//GEN-LAST:event_txtProveedorBuscarKeyTyped
+
+    private void txtProveedorBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProveedorBuscarKeyReleased
+        try {
+            llenarTablaProveedores(txtProveedorBuscar.getText());
+        } catch (SQLException ex) {
+            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_txtProveedorBuscarKeyReleased
+                                                                                                                                                                                                                             
     /**
      * @param args the command line arguments
      */
@@ -2558,7 +2879,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     private javax.swing.JTextField txtPrecioProductos2;
     private javax.swing.JTextField txtProductoInventario;
     private javax.swing.JTextField txtProductosBuscar;
-    private javax.swing.JTextField txtProductosBuscar1;
+    private javax.swing.JTextField txtProveedorBuscar;
     private javax.swing.JLabel txtTelefonoActualProveedor;
     private javax.swing.JTextField txtTelefonoProveedor;
     private javax.swing.JTextField txtTotal;

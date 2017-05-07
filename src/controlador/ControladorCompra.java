@@ -138,4 +138,6 @@ public class ControladorCompra {
         return (cn.getValores("SELECT MAX(IdCompra) FROM compra"));
     }
     */
+        
+        
 }

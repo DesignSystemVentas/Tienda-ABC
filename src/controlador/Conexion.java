@@ -12,15 +12,11 @@ import javax.swing.JOptionPane;
 
 
 public class Conexion {
-/*
-    static Connection GetConnection() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-*/
-    private Connection conexion;
+
+
     private String error = null;
     
-    private String url = "jdbc:mysql://172.17.0.2:3306/tienda";
+    private String url = "jdbc:mysql://localhost:3336/tienda";
     private String login = "root"; //Administrador de MySQL
     private String password = "1234";
     private Connection cnx = null;
@@ -61,21 +57,16 @@ public class Conexion {
     }
 
     public void desconectar() {
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-   
     try {
 
-          conexion.close();
+          cnx.close();
+          System.out.println("Se cerro la conexion");
         } catch (SQLException ex) {
-
+          
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-/*
-    public void conectar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-*/
+
      public Connection conectar()
     {
         

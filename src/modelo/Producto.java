@@ -9,6 +9,10 @@ public class Producto {
 public Producto(){
 
 }    
+
+    public Producto(String id, int inventario, Double costo, String nombre) {
+         //To change body of generated methods, choose Tools | Templates.
+    }
     public String getCodBarra() {
         return CodBarra;
     }

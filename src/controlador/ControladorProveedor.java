@@ -10,6 +10,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -44,11 +45,16 @@ public class ControladorProveedor {
         cs.execute();
     }
 
-    public void eliminarProveedor(Proveedor to) throws Exception{
-          Connection connection=cnMYSQL.getIntance().getConnection();
-          CallableStatement cs=connection.prepareCall("CALL Proveedor_Eliminar(?)");
-          cs.setInt(1, to.getIdProveedor());
-          cs.execute();
+    public void eliminarProveedor(Object P) throws SQLException, ClassNotFoundException, ErrorTienda, ErrorTienda {
+        Conexion cn = new Conexion();
+        try{
+        cn.conectar();  
+        cn.UID("DELETE FROM proveedor WHERE IdProveedor='" + P + "'");
+        System.out.println("se elimino con exito");
+        } catch (Exception ex){
+            throw new ErrorTienda("Eliminar" + ex.getMessage());
+        }finally{cn.desconectar();}
+        
     }
     
     public void modificarProveedor(Proveedor to) throws Exception{
