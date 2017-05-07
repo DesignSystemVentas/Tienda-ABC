@@ -46,6 +46,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     boolean ventas, compras, productos, proveedores;
     boolean apagado, principal;
     boolean modificarProducto;
+    boolean buscarProductoDesdeVenta;
     int x,y;
     JTableHeader tHeadVentas,tHeadCompras,tHeadProductos,tHeadCompra,tHeadProveedores,tHeadDetalleCompra;
     
@@ -232,7 +233,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
                 modeloBusquedaProductos.addRow(new String[]{Codigo,inventario,costo,nombre});
                 System.out.println("puso el modelo");
                 //modelo.addRow(rs.getString(1));
-
+                txtNombreProductoVender.setText(nombre);
             }
         } catch (Exception e) {
         }
@@ -657,11 +658,16 @@ public final class JFRPrincipal extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnProductosMouseClicked(evt);
             }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnProductosMouseExited(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnProductosMouseEntered(evt);
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnProductosMouseExited(evt);
+        });
+        btnProductos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProductosActionPerformed(evt);
             }
         });
         jpnSubMenu.add(btnProductos, new org.netbeans.lib.awtextra.AbsoluteConstraints(-126, 120, 180, 40));
@@ -1361,7 +1367,6 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         jpnVentas.add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 450, -1, -1));
         jpnVentas.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(617, 465, 40, 20));
 
-        txtCodigoBarraVender.setEditable(false);
         txtCodigoBarraVender.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtCodigoBarraVenderFocusGained(evt);
@@ -1665,7 +1670,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
                 btnNuevoProductoActionPerformed(evt);
             }
         });
-        jpnProductos.add(btnNuevoProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 510, 110, 30));
+        jpnProductos.add(btnNuevoProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 510, 110, 30));
 
         btnBuscarProducto.setBackground(new java.awt.Color(0, 0, 0));
         btnBuscarProducto.setForeground(new java.awt.Color(255, 255, 255));
@@ -2362,7 +2367,11 @@ public final class JFRPrincipal extends javax.swing.JFrame {
         if(txtCodBarraProductos.getText().isEmpty()){
         String code=JOptionPane.showInputDialog(null, "Escanee un codigo");
         
-        
+            try {
+                llenarTablaBuscarProducto(code);
+            } catch (SQLException ex) {
+                Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            }
         txtCodBarraProductos.setText(""+code);
         txtNombreProductos.setFocusable(true);
         }
@@ -2373,18 +2382,27 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCodBarraProductosFocusGained
 
     private void txtCodigoBarraVenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoBarraVenderActionPerformed
-        // TODO add your handling code here:
+
+        
+        try {
+                llenarTablaBuscarProducto(txtCodigoBarraVender.getText());
+            } catch (SQLException ex) {
+                Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+           // TODO add your handling code here:
     }//GEN-LAST:event_txtCodigoBarraVenderActionPerformed
 
     private void txtCodigoBarraVenderFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodigoBarraVenderFocusGained
-        if (txtCodBarraProductos.getText().isEmpty()) {
-            String code = JOptionPane.showInputDialog(null, "Escanee un codigo");
-
-            txtCodBarraProductos.setText("" + code);
-            txtNombreProductos.setFocusable(true);
-        } else {
-            txtNombreProductos.requestFocus();
-        }        // TODO add your handling code here:
+//        if (txtCodBarraProductos.getText().isEmpty()) {
+//            String code = JOptionPane.showInputDialog(null, "Escanee un codigo");
+//
+//            txtCodigoBarraVender.setText("" + code);
+//            txtNombreProductos.setFocusable(true);
+//            
+//        } else {
+//            txtNombreProductos.requestFocus();
+//        }        // TODO add your handling code here:
     }//GEN-LAST:event_txtCodigoBarraVenderFocusGained
 
     private void btnGuardarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProveedorActionPerformed
@@ -2469,7 +2487,10 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtIdCompraActionPerformed
 
     private void btnBuscarProductoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarProductoVentaActionPerformed
-        // TODO add your handling code here:
+
+        buscarProductoDesdeVenta=true;
+        jpnVentas.setVisible(false);
+        jpnProductos.setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_btnBuscarProductoVentaActionPerformed
 
     private void btnBuscarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarProductoActionPerformed
@@ -2620,6 +2641,10 @@ if(decide==0){
             Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_txtProveedorBuscarKeyReleased
+
+    private void btnProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnProductosActionPerformed
                                                                                                                                                                                                                              
     /**
      * @param args the command line arguments
