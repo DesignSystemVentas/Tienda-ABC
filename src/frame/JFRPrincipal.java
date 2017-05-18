@@ -39,7 +39,7 @@ import modelo.Proveedor;
  * @author Jose Lopez Garcia
  */
 public final class JFRPrincipal extends javax.swing.JFrame {
-    //VIZCARRA//
+    //VIZCARRA Esta es mi parte//
      Date date = new Date();
     Calendar calendar1 = Calendar.getInstance();
     Calendar calendar2 = new GregorianCalendar();
@@ -230,7 +230,7 @@ int columnasDeTabla, columna;
         }//TERMINA METODO PARA BUSCAR IDCOMPRA       
         
     }
-    //VIZCARRA//
+    //VIZCARRA Finalizo//
 
     boolean ventas, compras, productos, proveedores;
     boolean apagado, principal;
