@@ -191,7 +191,7 @@ int columnasDeTabla, columna;
         txtTotalventa.setText("$"+total);                  
     }//finaliza el metodo agregar a la tabla detalleventa en formulario venta
      
-//METODO PARA CONTAR OBTENER IDCOMPRA
+//METODO PARA CONTAR OBTENER IdCompra
     public void contarRegistro(){        
          int cantidad, mayor=0;           
         try {
@@ -1295,6 +1295,7 @@ int columnasDeTabla, columna;
         txtTotalventa.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jpnVentas.add(txtTotalventa, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 470, 120, 40));
 
+        txtNombreProductoVender.setEditable(false);
         txtNombreProductoVender.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jpnVentas.add(txtNombreProductoVender, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 120, 350, 40));
 
@@ -3270,18 +3271,15 @@ if(decide==0){
         } catch (SQLException ex) {
             Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
+        txtCantidadVender.setText("1");                    
         } else if (evt.getKeyCode()==java.awt.event.KeyEvent.VK_DELETE){
         txtCodigoBarraVender.setText("");
-        txtNombreProductoVender.setText("");
-        txtCantidadVender.setText("");
-            
+        txtNombreProductoVender.setText("");                          
         }
     }//GEN-LAST:event_txtCodigoBarraVenderKeyPressed
 
     private void txtCodigoBarraVenderKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoBarraVenderKeyReleased
-                txtCantidadVender.setText("1");
         CodigoBarraVender = txtCodigoBarraVender.getText();
-
     }//GEN-LAST:event_txtCodigoBarraVenderKeyReleased
 
     private void txtCantidadVenderKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantidadVenderKeyPressed
@@ -3291,9 +3289,11 @@ if(decide==0){
             } catch (ErrorTienda ex) {
                 Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else {
-            txtCantidadVender.setText("");
+        }     if (txtCantidadVender.getText().equals("1")) {
+            txtCantidadVender.setText("");          
         }
+        
+           
     }//GEN-LAST:event_txtCantidadVenderKeyPressed
 
     private void txtCantidadVenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadVenderActionPerformed
