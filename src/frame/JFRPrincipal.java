@@ -34,8 +34,6 @@ import modelo.DetalleVenta;
 import modelo.Parametro;
 import modelo.Producto;
 import modelo.Proveedor;
-
-//aprendiendo git
 /**
  *
  * @author Jose Lopez Garcia
