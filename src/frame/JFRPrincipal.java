@@ -3021,7 +3021,21 @@ int columnasDeTabla, columna;
         }
     }
     private void txtProductosBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProductosBuscarActionPerformed
-        // TODO add your handling code here:
+        if(txtProductosBuscar.getText().isEmpty()){
+        JOptionPane.showMessageDialog(null, "Ingrese un codigo de producto a buscar");
+        txtProductosBuscar.requestFocus();
+        }else{
+        String codigo=txtProductosBuscar.getText();
+        ControladorProducto cp= new ControladorProducto();
+        try {
+           cp.Obtener(codigo); 
+           
+           llenarTablaBuscarProducto(codigo);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "no logra obtener el producto");
+            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        }
     }//GEN-LAST:event_txtProductosBuscarActionPerformed
 
     private void btnEliminarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarProductoActionPerformed
