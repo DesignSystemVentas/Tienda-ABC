@@ -2431,7 +2431,7 @@ int columnasDeTabla, columna;
          lblFechaVentaMostrar.setText(anio+"/"+mes+"/"+dia);
          
     //traer el valor de la utilidad
-         int IdParametro = 1;
+         int IdParametro = 3;
          
                             try {
             rstParametro = claseparametro.obtenerUtilida(IdParametro);
@@ -3224,13 +3224,7 @@ if(decide==0){
     }//GEN-LAST:event_txtCodigoBarraVenderKeyReleased
 
     private void txtCantidadVenderKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantidadVenderKeyPressed
-//        if (evt.getKeyCode()==java.awt.event.KeyEvent.VK_1){
-//                    if (txtCantidadVender.getText().equals("1")) {
-//            txtCantidadVender.setText("");
-//                    }
-//        }
-//        
-        if (evt.getKeyCode()==java.awt.event.KeyEvent.VK_ENTER){
+               if (evt.getKeyCode()==java.awt.event.KeyEvent.VK_ENTER){
             try {
                 llenarTablaDetalleVenta();
             } catch (ErrorTienda ex) {
