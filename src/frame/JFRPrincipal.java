@@ -3224,17 +3224,19 @@ if(decide==0){
     }//GEN-LAST:event_txtCodigoBarraVenderKeyReleased
 
     private void txtCantidadVenderKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantidadVenderKeyPressed
+//        if (evt.getKeyCode()==java.awt.event.KeyEvent.VK_1){
+//                    if (txtCantidadVender.getText().equals("1")) {
+//            txtCantidadVender.setText("");
+//                    }
+//        }
+//        
         if (evt.getKeyCode()==java.awt.event.KeyEvent.VK_ENTER){
             try {
                 llenarTablaDetalleVenta();
             } catch (ErrorTienda ex) {
                 Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }     if (txtCantidadVender.getText().equals("1")) {
-            txtCantidadVender.setText("");          
-        }
-        
-           
+            } 
+        }                  
     }//GEN-LAST:event_txtCantidadVenderKeyPressed
 
     private void txtCantidadVenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadVenderActionPerformed
