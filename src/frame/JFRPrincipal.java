@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -112,31 +113,6 @@ int columnasDeTabla, columna;
             venta = Integer.parseInt(txtIdVenta.getText());
             cantidadvender = Integer.parseInt(txtCantidadVender.getText());
                                                
-//            try {//metodo para modificar la cantidad de existencias de la tabla inventario al agreagar nuevo articulo a la compra
-//        String CodBarra;
-//        CodBarra = txtCodigoBarraVender.getText();
-//        rstControladorProducto = null;
-//                        try {        
-//                            rstControladorProducto = cp.newExist(CodBarra);
-//                        } catch (ErrorTienda ex) {
-//                            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-//                        }
-//        
-//        while (rstControladorProducto.next()){
-//            float newExist;
-//            newExist = ((rstControladorProducto.getFloat(1))-(Float.parseFloat(txtCantidadVender.getText().toString())));
-//            try {
-//                cp.vender(newExist,CodBarra);
-//            } catch (ErrorTienda ex) {
-//                Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }        
-//        }catch(SQLException ex) {
-//            JOptionPane.showMessageDialog(null, ex);
-//        }//finalizando el metodo para la modificacion la existencias del campo cantidad de la tabla inventario
-//            
-        
-
 //hacer que al dar clip se pase al txtCodigoBarraVender
         txtCodigoBarraVender.requestFocus();     
         txtCodigoBarraVender.setText("");
@@ -155,20 +131,7 @@ int columnasDeTabla, columna;
             NuevaCantidad = Integer.parseInt(txtCantidadVender.getText());
             AntiguaCantidad = Integer.parseInt(tblProductosVender.getValueAt(j-1, 2).toString());            
             CantidadActualizada = AntiguaCantidad + NuevaCantidad;
-        try {// iniciado de buscar precio segun el codBarra
-            rstControladorProducto = cp.buscarPrecio((String)txtCodigoBarraVender.getText());
-        } catch (Exception ex) {
-            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-        
-        try {
-            while (rstControladorProducto.next()){
-                //guardar en una variable en precio del producto buscado desde la base de datos
-                PrecioUnitario = rstControladorProducto.getString("Costo");               
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }//finalizado de la busqueda del precio del producto segun el codBarra
+
        NuevoValor = Double.parseDouble(PrecioUnitario) * Double.parseDouble(txtCantidadVender.getText());
        NuevoValor = (NuevoValor*utilidadParametro) + (Double.parseDouble(tblProductosVender.getValueAt(j-1, 4).toString()));
        
@@ -1203,34 +1166,12 @@ int columnasDeTabla, columna;
 
         tblProductosVender.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
-                "Cod Barra", "Producto", "Cantidad", "Precio Unitario", "Sub Total"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, true, true
-            };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
             }
-        });
+        ));
         tblProductosVender.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(tblProductosVender);
 
@@ -3362,19 +3303,18 @@ if(decide==0){
          
                //Agrega cada item de detalle compra
             Conexion cn = new Conexion();//    
-    
        for(int i=0;i < modeloAddVenta.getRowCount();i++){
            cn.UID("INSERT INTO detalleventa(IdVenta, CodBarra, Cantidad, PrecioUnitario) "
                    + " VALUES('" +txtIdVenta.getText()+ "','" +modeloAddVenta.getValueAt(i, 0)+ "','"
-                   +modeloAddVenta.getValueAt(i, 2)+ "','" +modeloAddVenta.getValueAt(i, 3) +"')");
-       } //finalizar agregado de item 
-       
+                   +modeloAddVenta.getValueAt(i, 2)+ "','" +modeloAddVenta.getValueAt(i, 3) +"')");              
+           cn.UID("UPDATE productos SET Inventario = Inventario - '" +modeloAddVenta.getValueAt(i, 2)+ "'  WHERE CodBarra='" +modeloAddVenta.getValueAt(i, 0)+ "'");
+    }
+
        //limpiar la tabla
        for(int i=0;i < modeloAddVenta.getRowCount();i++){
        modeloAddVenta.removeRow(i);
        i-=1;
-       }
-        
+       }        
          txtCodigoBarraVender.setText("");
          txtNombreProductoVender.setText("");
          txtCantidadVender.setText("");         
@@ -3382,14 +3322,15 @@ if(decide==0){
          txtCodigoBarraVender.requestFocus();
          txtTotalventa.setText("");
          txtIdVenta.setText(""); 
-         contarRegistro();      
+         contarRegistro();         
           int filas = tblProductosVender.getRowCount(), iteracion=0;
         double total=0;
         while (iteracion<filas){
             total+=Double.parseDouble(String.valueOf(tblProductosVender.getValueAt(iteracion, 4)));
-            iteracion++;           
+            iteracion++;                    
         }
-        txtTotalventa.setText("$"+total);
+                          
+        txtTotalventa.setText("$"+total);        
     }//GEN-LAST:event_btnVenderActionPerformed
 
     private void btnEliminarProveedorMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarProveedorMouseExited
