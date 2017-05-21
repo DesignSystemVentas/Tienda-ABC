@@ -19,16 +19,19 @@ import java.util.List;
  * @author JOSHUA
  */
 public class ControladorProveedor {
-
-    private ControladorProveedor(int id, String nombre, String telefono, String direccion, String nit) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+Conexion cn= new Conexion();
 
     public ControladorProveedor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       List  Lista = new ArrayList<>();
     }
-  
+
+    public ControladorProveedor(int id, String nombre, String telefono, String direccion, String nit){
     
+    }
+    
+public class ProveedorControlador {
+ 
+}
        public List BuscarP(String codigo) throws Exception{   
         Conexion cn = new Conexion();
         List Lista = new ArrayList<>();
@@ -61,13 +64,13 @@ public class ControladorProveedor {
        public void AgregarP(Object P[]) throws SQLException, ClassNotFoundException, ErrorTienda, ErrorTienda {
         Conexion cn = new Conexion();
         try{
-//        cn.conectar();  
+        cn.conectar();  
         cn.UID("INSERT INTO proveedor(IdProveedor,Nombre,Telefono,Direccion,NIT) VALUES(" +P[0]+ "," + P[1] + ",'" + P[2] + "','" + P[3]+ "')");
         System.out.println("se agrego con exito");
         } catch (Exception ex){
             throw new ErrorTienda("Insertar" + ex.getMessage());
         }
-//        finally{cn.desconectar();}
+        finally{cn.desconectar();}
 //        
     }
 
