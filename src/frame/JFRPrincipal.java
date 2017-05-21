@@ -35,10 +35,8 @@ import modelo.DetalleVenta;
 import modelo.Parametro;
 import modelo.Producto;
 import modelo.Proveedor;
-/**
- *
- * @author Jose Lopez Garcia
- */
+
+
 public final class JFRPrincipal extends javax.swing.JFrame {
     //VIZCARRA Esta es mi parte//
      Date date = new Date();
@@ -209,6 +207,7 @@ int columnasDeTabla, columna;
     DefaultTableModel modeloCompra = new DefaultTableModel();
     DefaultTableModel modeloAddCompra = new DefaultTableModel();
     
+    boolean flagCompra=false;
     int cantidad =0;
     int mayor =0;
     boolean bandera = false;
@@ -1578,6 +1577,9 @@ int columnasDeTabla, columna;
         jpnRegistroCompra.add(lblCodBarraProd, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 80, 30));
 
         txtCodBarraProd.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtCodBarraProdFocusGained(evt);
+            }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtCodBarraProdFocusLost(evt);
             }
@@ -1590,6 +1592,9 @@ int columnasDeTabla, columna;
         txtCodBarraProd.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtCodBarraProdKeyTyped(evt);
+            }
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCodBarraProdKeyPressed(evt);
             }
         });
         jpnRegistroCompra.add(txtCodBarraProd, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 190, 120, 30));
@@ -1607,6 +1612,11 @@ int columnasDeTabla, columna;
                 txtNomProdFocusLost(evt);
             }
         });
+        txtNomProd.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtNomProdKeyPressed(evt);
+            }
+        });
         jpnRegistroCompra.add(txtNomProd, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 190, 140, 30));
 
         lblCantidad.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -1621,6 +1631,9 @@ int columnasDeTabla, columna;
         txtCantidad.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtCantidadKeyTyped(evt);
+            }
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCantidadKeyPressed(evt);
             }
         });
         jpnRegistroCompra.add(txtCantidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 190, 40, 30));
@@ -3046,6 +3059,7 @@ if(decide==0){
             txtNomProd.setText(producto);
             if(txtNomProd.getText().isEmpty()){
                 txtNomProd.setEditable(true);
+               
             }
         } catch (Exception ex) {
             Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
@@ -3087,7 +3101,7 @@ if(decide==0){
     }//GEN-LAST:event_txtCostoProdKeyTyped
 
     private void txtCostoProdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCostoProdKeyPressed
-      if(!(txtNomProd.getText().isEmpty())){
+      if(!(txtCostoProd.getText().isEmpty())){
        char car=(char) evt.getKeyCode();
        if(car==evt.VK_ENTER){
        ControladorCompra cc = new ControladorCompra();
@@ -3163,13 +3177,37 @@ if(decide==0){
        totalC+= canti*oldCosto;
        txtTotal.setText(String.valueOf(totalC));
        }
+       if(flagCompra==true){        //Si no hay una compra registrada, aqui se registra
+           ControladorProducto cpp= new ControladorProducto();
+
+                String id = txtCodBarraProd.getText();
+                int inventario = Integer.parseInt(txtCantidad.getText());
+                Double costo1= Double.parseDouble(txtCostoProd.getText());
+                String nombre = txtNomProd.getText();
+                Object P[]={id,inventario, costo1, nombre};
+                
+                flagCompra=false; //regresa a su estado inicial
+                
+          try {
+              cpp.Agregar(P);
+          } catch (SQLException ex) {
+              Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+          } catch (ClassNotFoundException ex) {
+              Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+          } catch (ErrorTienda ex) {
+              Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+          }
+       }
+       
        
        limpiarRegistroCompra();
        txtNomProd.setEditable(false);
+       flagCompra=false;
        txtCodBarraProd.requestFocus();       }
-      }else{
-          JOptionPane.showMessageDialog(null, "El campo nombre esta vacio, ingrese un nombre para el producto porfavor");
-          txtNomProd.requestFocus();
+      }
+      else{
+          JOptionPane.showMessageDialog(null, "Ingrese Un costo");
+          txtCostoProd.requestFocus();
       }
     }//GEN-LAST:event_txtCostoProdKeyPressed
 
@@ -3178,13 +3216,16 @@ if(decide==0){
     }//GEN-LAST:event_txtCodBarraProdActionPerformed
 
     private void txtNomProdFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNomProdFocusLost
-
+       txtNomProd.setEnabled(false);
     }//GEN-LAST:event_txtNomProdFocusLost
 
     private void txtNomProdFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNomProdFocusGained
+        txtNomProd.setEnabled(true);
+        
         if(!(txtNomProd.getText().isEmpty())){
             txtCantidad.requestFocus();
         }
+        
     }//GEN-LAST:event_txtNomProdFocusGained
 
     private void lblFechaVentaMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lblFechaVentaMostrarActionPerformed
@@ -3585,6 +3626,47 @@ if(decide==0){
         jpnModificarProveedor.setVisible(false);
         jpnProveedores.setVisible(true);
     }//GEN-LAST:event_btnAtrasModificarProveedorActionPerformed
+
+    private void txtCodBarraProdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodBarraProdKeyPressed
+       if (evt.getKeyCode()==java.awt.event.KeyEvent.VK_ENTER){
+           if(txtNomProd.getText().isEmpty()){
+           txtNomProd.requestFocus();
+           }       
+       }
+    }//GEN-LAST:event_txtCodBarraProdKeyPressed
+
+    private void txtCodBarraProdFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodBarraProdFocusGained
+      
+        txtCodBarraProd.setText("");
+        txtNomProd.setText("");
+        txtCantidad.setText("");
+        txtCostoProd.setText("");
+        
+    }//GEN-LAST:event_txtCodBarraProdFocusGained
+
+    private void txtNomProdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNomProdKeyPressed
+        if (evt.getKeyCode()==java.awt.event.KeyEvent.VK_ENTER){
+           if(txtNomProd.getText().isEmpty()){
+           JOptionPane.showMessageDialog(null, "ingrese un nombre de producto");
+           txtNomProd.setEnabled(true);
+           txtNomProd.requestFocus();
+          
+           }else{
+               txtCantidad.requestFocus();
+           }
+           flagCompra=true;
+       }
+    }//GEN-LAST:event_txtNomProdKeyPressed
+
+    private void txtCantidadKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantidadKeyPressed
+       if (evt.getKeyCode()==java.awt.event.KeyEvent.VK_ENTER){
+           if(txtCantidad.getText().isEmpty()){
+               JOptionPane.showMessageDialog(null, "Ingrese una cantidad");
+               txtCantidad.requestFocus();
+           }else{
+                txtCostoProd.requestFocus();}   
+       }
+    }//GEN-LAST:event_txtCantidadKeyPressed
 
     /**
      * @param args the command line arguments
