@@ -493,16 +493,17 @@ int columnasDeTabla, columna;
         rs = llenarTablaBuscarProductoSql(codigo);
          //String []encabezado={"Codigo","Nombre","Primer apellido","Segundo Apellido", "Edad", "Direccion", "Telefono"};
          if (!rs.isBeforeFirst()) {    
-    JOptionPane.showMessageDialog(null, "El producto no existe"); 
+    lblMostrarErrorProductos.setText("no existe el producto");
 }    else{
              txtProductosBuscar.setText("");
          try {
             while (rs.next()) {
+                limpiarTablaBuscarProducto();
                 String Codigo = rs.getString("CodBarra");
                 String inventario = rs.getString("Inventario");
                 String costo = rs.getString("Costo");
                 String nombre = rs.getString("nombre");
-                modeloBusquedaProductos.addRow(new String[]{Codigo,inventario,costo,nombre});
+                modeloBusquedaProductos.addRow(new String[]{Codigo,nombre,costo, inventario});
                 System.out.println("puso el modelo");
                 //modelo.addRow(rs.getString(1));
                 txtNombreProductoVender.setText(nombre);
@@ -515,6 +516,40 @@ int columnasDeTabla, columna;
          }
         
     }
+    
+    public void llenarTablaProductoTyped(String codigo) throws SQLException{
+        //clearTableCompra();
+        limpiarTablaBuscarProducto();
+          rs=null;    
+        rs = llenarTablaBuscarProductoSql(codigo);
+         //String []encabezado={"Codigo","Nombre","Primer apellido","Segundo Apellido", "Edad", "Direccion", "Telefono"};
+         if (!rs.isBeforeFirst()) { 
+             lblMostrarErrorProductos.setText("No existe");
+    //JOptionPane.showMessageDialog(null, "El producto no existe"); 
+}    else{
+             txtProductosBuscar.setText("");
+         try {
+            while (rs.next()) {
+                String Codigo = rs.getString("CodBarra");
+                String inventario = rs.getString("Inventario");
+                String costo = rs.getString("Costo");
+                String nombre = rs.getString("nombre");
+                modeloBusquedaProductos.addRow(new String[]{Codigo,nombre,costo,inventario});
+                System.out.println("puso el modelo");
+                //modelo.addRow(rs.getString(1));
+                txtNombreProductoVender.setText(nombre);
+                lblMostrarErrorProductos.setText("");
+            }
+        } catch (Exception e) {
+            lblMostrarErrorProductos.setText("No existe");
+        }
+        
+        jtblProductos.setModel(modeloBusquedaProductos);
+         
+         }
+        
+    }
+    
 
     
     
@@ -760,6 +795,7 @@ int columnasDeTabla, columna;
         txtProductosBuscar = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jSeparator37 = new javax.swing.JSeparator();
+        lblMostrarErrorProductos = new javax.swing.JLabel();
         jpnNuevoProducto = new javax.swing.JPanel();
         btnAgregarNuevoProducto = new javax.swing.JButton();
         btnSalirProductos = new javax.swing.JButton();
@@ -929,11 +965,11 @@ int columnasDeTabla, columna;
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnProductosMouseClicked(evt);
             }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnProductosMouseEntered(evt);
-            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnProductosMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnProductosMouseEntered(evt);
             }
         });
         btnProductos.addActionListener(new java.awt.event.ActionListener() {
@@ -1810,6 +1846,9 @@ int columnasDeTabla, columna;
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtProductosBuscarKeyTyped(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtProductosBuscarKeyReleased(evt);
+            }
         });
         jpnProductos.add(txtProductosBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 110, 430, 30));
 
@@ -1817,6 +1856,7 @@ int columnasDeTabla, columna;
         jLabel3.setText("Producto a buscar:");
         jpnProductos.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 80, -1, -1));
         jpnProductos.add(jSeparator37, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 96, 120, 20));
+        jpnProductos.add(lblMostrarErrorProductos, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 170, 300, 20));
 
         getContentPane().add(jpnProductos, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 50, 730, 600));
 
@@ -2125,11 +2165,11 @@ int columnasDeTabla, columna;
             }
         });
         txtProveedorBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtProveedorBuscarKeyReleased(evt);
-            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtProveedorBuscarKeyTyped(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtProveedorBuscarKeyReleased(evt);
             }
         });
         jpnProveedores.add(txtProveedorBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 670, 30));
@@ -2186,7 +2226,18 @@ int columnasDeTabla, columna;
                 txtDireccionProveedorActionPerformed(evt);
             }
         });
+        txtDireccionProveedor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDireccionProveedorKeyTyped(evt);
+            }
+        });
         jpnAgregarProv.add(txtDireccionProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 290, 410, 30));
+
+        txtNIT.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNITKeyTyped(evt);
+            }
+        });
         jpnAgregarProv.add(txtNIT, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 350, 230, 30));
 
         txtNombreProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -2195,11 +2246,21 @@ int columnasDeTabla, columna;
                 txtNombreProveedorActionPerformed(evt);
             }
         });
+        txtNombreProveedor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreProveedorKeyTyped(evt);
+            }
+        });
         jpnAgregarProv.add(txtNombreProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 170, 410, 30));
 
         txtTelefonoProveedor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtTelefonoProveedorActionPerformed(evt);
+            }
+        });
+        txtTelefonoProveedor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelefonoProveedorKeyTyped(evt);
             }
         });
         jpnAgregarProv.add(txtTelefonoProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 230, 230, 30));
@@ -2291,7 +2352,18 @@ int columnasDeTabla, columna;
                 txtNuevoDireccionProveedorActionPerformed(evt);
             }
         });
+        txtNuevoDireccionProveedor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNuevoDireccionProveedorKeyTyped(evt);
+            }
+        });
         jpnModificarProveedor.add(txtNuevoDireccionProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 310, 410, 30));
+
+        txtNuevoNIT.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNuevoNITKeyTyped(evt);
+            }
+        });
         jpnModificarProveedor.add(txtNuevoNIT, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 400, 230, 30));
 
         txtNuevoNombreProveedor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -2300,11 +2372,21 @@ int columnasDeTabla, columna;
                 txtNuevoNombreProveedorActionPerformed(evt);
             }
         });
+        txtNuevoNombreProveedor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNuevoNombreProveedorKeyTyped(evt);
+            }
+        });
         jpnModificarProveedor.add(txtNuevoNombreProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 130, 410, 30));
 
         txtNuevoTelefonoProveedor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtNuevoTelefonoProveedorActionPerformed(evt);
+            }
+        });
+        txtNuevoTelefonoProveedor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNuevoTelefonoProveedorKeyTyped(evt);
             }
         });
         jpnModificarProveedor.add(txtNuevoTelefonoProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 220, 230, 30));
@@ -2751,7 +2833,8 @@ int columnasDeTabla, columna;
     }//GEN-LAST:event_btnComprasActionPerformed
 
     private void btnProveedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProveedoresActionPerformed
-        // TODO add your handling code here:
+        limpiarTablaProveedores();
+        llenarTablaProveedoresP();
     }//GEN-LAST:event_btnProveedoresActionPerformed
 
     private void txtCodBarraProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodBarraProductosActionPerformed
@@ -2986,6 +3069,7 @@ buscarProductos();
     }
     
     
+    
     private void btnAgregarNuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarNuevoProductoActionPerformed
                ControladorProducto cpp= new ControladorProducto();
 
@@ -3044,9 +3128,9 @@ buscarProductos();
         try {
             while(rsProducto.next()){
                 producto[0]=rsProducto.getString(1);
-                producto[1]=rsProducto.getString(2);
+                producto[3]=rsProducto.getString(2);
                 producto[2]=rsProducto.getString(3);
-                producto[3]=rsProducto.getString(4);
+                producto[1]=rsProducto.getString(4);
                 
                 modeloBusquedaProductos.addRow(producto);
                 
@@ -3534,6 +3618,7 @@ if(decide==0){
 
     private void txtProveedorBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProveedorBuscarKeyReleased
         try {
+          
             llenarTablaProveedores(txtProveedorBuscar.getText());
         } catch (SQLException ex) {
             Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
@@ -3541,7 +3626,14 @@ if(decide==0){
     }//GEN-LAST:event_txtProveedorBuscarKeyReleased
 
     private void txtProveedorBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProveedorBuscarKeyTyped
-
+            char c=evt.getKeyChar();
+       if(Character.isDigit(c)){
+       
+       
+       }else{
+       evt.consume();
+       }     
+            
     }//GEN-LAST:event_txtProveedorBuscarKeyTyped
 
     private void btnGuardarProveedorMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarProveedorMouseEntered
@@ -3587,6 +3679,7 @@ if(decide==0){
 
         public void llenarTablaProveedoresP()
         {
+            limpiarTablaProveedores();
             Conexion cn = new Conexion();
             cn.conectar();
 
@@ -3600,7 +3693,8 @@ if(decide==0){
                     proveedor[3]=rsProveedor.getString(4);
                     proveedor[4]=rsProveedor.getString(5);
 
-                    modeloBusquedaProductos.addRow(proveedor);
+                    modeloTablaProveedor.addRow(proveedor);
+                    tblProveedores.setModel(modeloTablaProveedor);
 
                 }
             } catch (SQLException ex) {
@@ -3786,6 +3880,91 @@ txtNuevoDireccionProveedor.requestFocus();
         evt.setSource((char)KeyEvent.VK_CLEAR);
 txtNuevoNIT.requestFocus();  
     }//GEN-LAST:event_txtNuevoDireccionProveedorActionPerformed
+
+    private void txtProductosBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProductosBuscarKeyReleased
+       
+        char c=evt.getKeyChar();
+        if(txtProductosBuscar.getText().isEmpty()|| c==8 || c==13){ }
+        else{
+        try {
+            limpiarTablaBuscarProducto();
+            llenarTablaProductoTyped(txtProductosBuscar.getText());
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        }
+        
+        
+        
+    }//GEN-LAST:event_txtProductosBuscarKeyReleased
+
+    private void txtNuevoNombreProveedorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNuevoNombreProveedorKeyTyped
+       char c=evt.getKeyChar();
+       if((Character.isLetter(c) || c==8 || c==32) && txtNuevoNombreProveedor.getText().length()<30 ){
+       //(Character.isDigit(c) || c==8 ) && txtCpu.getText().length()<2
+       }else{
+       evt.consume();
+       }
+    }//GEN-LAST:event_txtNuevoNombreProveedorKeyTyped
+
+    private void txtNuevoTelefonoProveedorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNuevoTelefonoProveedorKeyTyped
+        char c=evt.getKeyChar();
+        if(txtNuevoTelefonoProveedor.getText().length()<8 && (Character.isDigit(c) || c==8) ){
+        }
+        else{evt.consume();}
+    }//GEN-LAST:event_txtNuevoTelefonoProveedorKeyTyped
+
+    private void txtNuevoDireccionProveedorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNuevoDireccionProveedorKeyTyped
+        char c=evt.getKeyChar();
+        if(txtNuevoDireccionProveedor.getText().length()<40 || c==8 || c==32){
+        
+        }else{evt.consume();}
+    }//GEN-LAST:event_txtNuevoDireccionProveedorKeyTyped
+
+    private void txtNuevoNITKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNuevoNITKeyTyped
+        char c=evt.getKeyChar();
+        if(txtNuevoNIT.getText().length()<14 && (Character.isDigit(c) || c==8)){
+        }
+        else{evt.consume();}
+    }//GEN-LAST:event_txtNuevoNITKeyTyped
+
+    private void txtNombreProveedorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreProveedorKeyTyped
+        char c=evt.getKeyChar();
+        if((Character.isLetter(c) || c==8 || c==32) && txtNombreProveedor.getText().length()<30 ){
+       //(Character.isDigit(c) || c==8 ) && txtCpu.getText().length()<2
+       }else{
+       evt.consume();
+       }
+    }//GEN-LAST:event_txtNombreProveedorKeyTyped
+
+    private void txtTelefonoProveedorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoProveedorKeyTyped
+      char c=evt.getKeyChar();
+        if((Character.isDigit(c) || c==8)&& txtTelefonoProveedor.getText().length()<30 ){
+       //(Character.isDigit(c) || c==8 ) && txtCpu.getText().length()<2
+       }else{
+       evt.consume();
+       }
+    }//GEN-LAST:event_txtTelefonoProveedorKeyTyped
+
+    private void txtDireccionProveedorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionProveedorKeyTyped
+        char c=evt.getKeyChar();
+        if(txtDireccionProveedor.getText().length()<30 || c==32 || c==8){
+       //(Character.isDigit(c) || c==8 ) && txtCpu.getText().length()<2
+       }else{
+       evt.consume();
+       }
+    }//GEN-LAST:event_txtDireccionProveedorKeyTyped
+
+    private void txtNITKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNITKeyTyped
+        char c=evt.getKeyChar();
+        if((Character.isDigit(c) || c==8)&& txtTelefonoProveedor.getText().length()<13 ){
+       //(Character.isDigit(c) || c==8 ) && txtCpu.getText().length()<2
+       }else{
+       evt.consume();
+       }
+    }//GEN-LAST:event_txtNITKeyTyped
 
 
     /**
@@ -4003,6 +4182,7 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JLabel lblMitad3;
     private javax.swing.JLabel lblMitad4;
     private javax.swing.JLabel lblMitad5;
+    private javax.swing.JLabel lblMostrarErrorProductos;
     private javax.swing.JLabel lblNomProd;
     private javax.swing.JLabel lblProveedor;
     private javax.swing.JLabel lblProveedores3;
