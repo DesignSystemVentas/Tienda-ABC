@@ -1784,6 +1784,11 @@ int columnasDeTabla, columna;
                 txtProductosBuscarActionPerformed(evt);
             }
         });
+        txtProductosBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtProductosBuscarKeyTyped(evt);
+            }
+        });
         jpnProductos.add(txtProductosBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 110, 430, 30));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -2874,7 +2879,11 @@ int columnasDeTabla, columna;
     }//GEN-LAST:event_btnBuscarProductoVentaActionPerformed
 
     private void btnBuscarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarProductoActionPerformed
-        if(txtProductosBuscar.getText().isEmpty()){
+buscarProductos();
+    }//GEN-LAST:event_btnBuscarProductoActionPerformed
+
+    private void buscarProductos(){
+    if(txtProductosBuscar.getText().isEmpty()){
         JOptionPane.showMessageDialog(null, "Ingrese un codigo de producto a buscar");
         txtProductosBuscar.requestFocus();
         }else{
@@ -2889,8 +2898,10 @@ int columnasDeTabla, columna;
             Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
         }
-    }//GEN-LAST:event_btnBuscarProductoActionPerformed
-
+    
+    }
+    
+    
     private void btnAgregarNuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarNuevoProductoActionPerformed
                ControladorProducto cpp= new ControladorProducto();
 
@@ -2961,21 +2972,7 @@ int columnasDeTabla, columna;
         }
     }
     private void txtProductosBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProductosBuscarActionPerformed
-        if(txtProductosBuscar.getText().isEmpty()){
-        JOptionPane.showMessageDialog(null, "Ingrese un codigo de producto a buscar");
-        txtProductosBuscar.requestFocus();
-        }else{
-        String codigo=txtProductosBuscar.getText();
-        ControladorProducto cp= new ControladorProducto();
-        try {
-           cp.Obtener(codigo); 
-           
-           llenarTablaBuscarProducto(codigo);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "no logra obtener el producto");
-            Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        }
+        buscarProductos();
     }//GEN-LAST:event_txtProductosBuscarActionPerformed
 
     private void btnEliminarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarProductoActionPerformed
@@ -3585,6 +3582,18 @@ if(decide==0){
         jpnModificarProveedor.setVisible(false);
         jpnProveedores.setVisible(true);
     }//GEN-LAST:event_btnAtrasModificarProveedorActionPerformed
+
+    private void txtProductosBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProductosBuscarKeyTyped
+        char c=evt.getKeyChar();
+        
+        if(c==8 || Character.isLetterOrDigit(c)){
+        
+        }else if(c==13){
+        buscarProductos();
+        }else{
+        evt.consume();
+        }
+    }//GEN-LAST:event_txtProductosBuscarKeyTyped
 
     /**
      * @param args the command line arguments
