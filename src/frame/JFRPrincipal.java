@@ -14,10 +14,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -207,6 +209,7 @@ int columnasDeTabla, columna;
     DefaultTableModel modeloCompra = new DefaultTableModel();
     DefaultTableModel modeloAddCompra = new DefaultTableModel();
     
+    List<String> newProducto = new ArrayList<String>();
     boolean flagCompra=false;
     int cantidad =0;
     int mayor =0;
@@ -1453,11 +1456,11 @@ int columnasDeTabla, columna;
         btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/guardarprov.png"))); // NOI18N
         btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnGuardarMouseEntered(evt);
-            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnGuardarMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnGuardarMouseEntered(evt);
             }
         });
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -2799,10 +2802,12 @@ int columnasDeTabla, columna;
        Conexion cn = new Conexion();
        cn.conectar();
        ResultSet rs = null;  
+       ResultSet rsUpdate = null;
        String proveedor = modeloProveedor.getElementAt(cmbProveedor.getSelectedIndex()).toString();
        rs = cn.getValores("SELECT  IdProveedor FROM proveedor WHERE Nombre = '"+ proveedor +"'");
-       String IdProveedor="" , pro="";
-       
+       String IdProveedor="" , pro="" ;
+       int oldCantidad = 0, newCantidad = 0;
+       boolean bendera =false;
        
        try{
        while(rs.next())
@@ -2827,7 +2832,31 @@ int columnasDeTabla, columna;
            cn.UID("INSERT INTO detallecompra(CodBarra, IdCompra, Cantidad, CostoUnitario) "
                    + "VALUES('" + modeloAddCompra.getValueAt(i, 0)+ "','" + txtIdCompra.getText()+"','"
                    +modeloAddCompra.getValueAt(i, 2)+ "','" +modeloAddCompra.getValueAt(i, 3) +"')");
-        }
+       
+          //aplciar interrumptor
+          for(int j=0 ; j < newProducto.size() ; j++){//si se agrego un nuevo producto, aqui se reflejara y no habra duplicados
+              if(newProducto.get(j).equals(modeloAddCompra.getValueAt(i, 0))){    
+                  bandera=true;
+              
+              }
+          }
+          if(bandera==false){
+                rsUpdate = cn.getValores("SELECT Inventario FROM productos WHERE CodBarra ='"+modeloAddCompra.getValueAt(i, 0)+"'");
+
+                try {
+                    while(rsUpdate.next()){
+                        oldCantidad = Integer.parseInt(rsUpdate.getString(1));
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(JFRPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                newCantidad = oldCantidad + Integer.parseInt((String) modeloAddCompra.getValueAt(i, 2));
+                cn.UID("UPDATE productos SET Inventario='"+newCantidad+"' WHERE CodBarra ='"+modeloAddCompra.getValueAt(i, 0)+"'");
+                //finalizar interrumptor
+          }
+          bendera=false;
+       }
     
        for(int i=0;i < modeloAddCompra.getRowCount();i++){
        modeloAddCompra.removeRow(i);
@@ -2839,6 +2868,8 @@ int columnasDeTabla, columna;
            i-=1;
            
        }
+       
+       
        limpiarRegistroCompra();
        llenarTablaCompra();
        txtTotal.setText("");
@@ -3206,7 +3237,7 @@ if(decide==0){
        txtCodBarraProd.requestFocus();       }
       }
       else{
-          JOptionPane.showMessageDialog(null, "Ingrese Un costo");
+         
           txtCostoProd.requestFocus();
       }
     }//GEN-LAST:event_txtCostoProdKeyPressed
@@ -3645,6 +3676,7 @@ if(decide==0){
     }//GEN-LAST:event_txtCodBarraProdFocusGained
 
     private void txtNomProdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNomProdKeyPressed
+    
         if (evt.getKeyCode()==java.awt.event.KeyEvent.VK_ENTER){
            if(txtNomProd.getText().isEmpty()){
            JOptionPane.showMessageDialog(null, "ingrese un nombre de producto");
@@ -3655,6 +3687,8 @@ if(decide==0){
                txtCantidad.requestFocus();
            }
            flagCompra=true;
+           newProducto.add(txtCodBarraProd.getText());//sirve de interruptor cuando se hace una compra
+           
        }
     }//GEN-LAST:event_txtNomProdKeyPressed
 
