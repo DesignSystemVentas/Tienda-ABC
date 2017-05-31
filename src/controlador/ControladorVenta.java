@@ -76,7 +76,7 @@ public class ControladorVenta {
             Conexion cn = new Conexion();
            return (cn.getValores("SELECT COUNT(IdVenta) FROM venta"));
         } catch (ArithmeticException ex) {
-            throw new ErrorTienda("Error de Calculo" + ex.getMessage());           
+            throw new ErrorTienda("Error" + ex.getMessage());           
         }
     }
     public ResultSet mayorRegistro() throws SQLException, ClassNotFoundException, ErrorTienda, ErrorTienda, Exception {
@@ -85,7 +85,7 @@ public class ControladorVenta {
             Conexion cn = new Conexion();
            return (cn.getValores("SELECT COUNT(IdVenta) FROM venta"));
         } catch (ArithmeticException ex) {
-            throw new ErrorTienda("Error de Calculo" + ex.getMessage());           
+            throw new ErrorTienda("Error al buscar conteo" + ex.getMessage());           
         }
     }
     public void insertarVenta(int IdVenta, String Fecha, String Cliente, double Total) throws ErrorTienda{
@@ -94,10 +94,19 @@ public class ControladorVenta {
              Conexion cn = new Conexion();
         cn.UID("INSERT INTO venta(IdVenta,Fecha,Cliente,Total) VALUES('" + IdVenta + "','" + Fecha + "','" + Cliente + "','" + Total + "')");
        } catch (ArithmeticException ex) {
-            throw new ErrorTienda("Error de Calculo" + ex.getMessage());           
+            throw new ErrorTienda("Error al insertar la venta realizada" + ex.getMessage());           
         } 
          
          }
+     public ResultSet llenarVenta() throws ErrorTienda{
+         try  {
+             Conexion cn = new Conexion();
+             return (cn.getValores("SELECT IdVenta, Fecha, Cliente, Total FROM venta"));
+         }catch(ArithmeticException ex) {
+             throw new ErrorTienda("Error al traer datos de la bs en la tabla ventas" + ex.getMessage());           
+         }
+        
+    }
     //VIZCARRA//
     
 }

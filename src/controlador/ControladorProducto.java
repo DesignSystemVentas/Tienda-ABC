@@ -17,6 +17,8 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import modelo.Parametro;
 import frame.JFRPrincipal;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 
 /**
@@ -132,11 +134,11 @@ public class ProductoControlador {
     }
      public ResultSet buscarNombre(String CodBarra) throws SQLException, ClassNotFoundException, ErrorTienda, ErrorTienda {
          Conexion cn = new Conexion();
-        try{
+        try{            
             return (cn.getValores("SELECT * FROM productos WHERE CodBarra = '" + CodBarra + "'"));
         } catch (Exception ex){
             throw new ErrorTienda("Insertar" + ex.getMessage());
-        }        
+        }         
     }
      //VIZCARRA//
 }

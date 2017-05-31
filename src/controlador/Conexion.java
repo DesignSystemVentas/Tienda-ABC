@@ -16,12 +16,13 @@ public class Conexion {
 
     private String error = null;
     
-    private String url = "jdbc:mysql://localhost:3336/tienda";
+    private String url = "jdbc:mysql://localhost:3306/tienda";
     private String login = "root"; //Administrador de MySQL
-    private String password = "1234";
+    private String password = "";
     private Connection cnx = null;
     private Statement sttm = null;
     private ResultSet rst = null;
+    
     //método para Update, Insert, Delete
     public void UID(String sql) {
         try {
@@ -63,13 +64,11 @@ public class Conexion {
           System.out.println("Se cerro la conexion");
         } catch (SQLException ex) {
           
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-     public Connection conectar()
-    {
-        
+     public Connection conectar() {        
         Connection link =null;
         try
         {
