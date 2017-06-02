@@ -990,6 +990,15 @@ try {
         jSeparator36 = new javax.swing.JSeparator();
         lblCostoProd = new javax.swing.JLabel();
         txtCostoProd = new javax.swing.JTextField();
+        txtTotal1 = new javax.swing.JTextField();
+        txtTotal3 = new javax.swing.JTextField();
+        txtTotal4 = new javax.swing.JTextField();
+        lblTotal1 = new javax.swing.JLabel();
+        lblTotal2 = new javax.swing.JLabel();
+        lblTotal3 = new javax.swing.JLabel();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
+        jRadioButton3 = new javax.swing.JRadioButton();
         jpnProductos = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jtblProductos = new javax.swing.JTable();
@@ -1041,6 +1050,15 @@ try {
         jSeparator33 = new javax.swing.JSeparator();
         txtTotal2 = new javax.swing.JTextField();
         btnAtrasDetalleCompra = new javax.swing.JButton();
+        jLabel42 = new javax.swing.JLabel();
+        jSeparator44 = new javax.swing.JSeparator();
+        txtTotal5 = new javax.swing.JTextField();
+        jLabel43 = new javax.swing.JLabel();
+        jSeparator45 = new javax.swing.JSeparator();
+        txtTotal6 = new javax.swing.JTextField();
+        jSeparator46 = new javax.swing.JSeparator();
+        txtTotal7 = new javax.swing.JTextField();
+        jLabel45 = new javax.swing.JLabel();
         jpnProveedores = new javax.swing.JPanel();
         btnEliminarProveedor = new javax.swing.JButton();
         btnAgregarProveedor = new javax.swing.JButton();
@@ -1164,11 +1182,11 @@ try {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnComprasMouseClicked(evt);
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnComprasMouseExited(evt);
-            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnComprasMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnComprasMouseExited(evt);
             }
         });
         btnCompras.addActionListener(new java.awt.event.ActionListener() {
@@ -1184,11 +1202,11 @@ try {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnProductosMouseClicked(evt);
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnProductosMouseExited(evt);
-            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnProductosMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnProductosMouseExited(evt);
             }
         });
         btnProductos.addActionListener(new java.awt.event.ActionListener() {
@@ -1722,7 +1740,7 @@ try {
                 btnGuardarActionPerformed(evt);
             }
         });
-        jpnRegistroCompra.add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 540, 110, 30));
+        jpnRegistroCompra.add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 530, 110, 30));
 
         btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/atras.png"))); // NOI18N
         btnCancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -1730,11 +1748,11 @@ try {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnCancelarMouseClicked(evt);
             }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnCancelarMouseEntered(evt);
-            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnCancelarMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCancelarMouseEntered(evt);
             }
         });
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -1742,7 +1760,7 @@ try {
                 btnCancelarActionPerformed(evt);
             }
         });
-        jpnRegistroCompra.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 540, 110, 30));
+        jpnRegistroCompra.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 530, 110, 30));
 
         txtIdCompra.setEditable(false);
         txtIdCompra.addActionListener(new java.awt.event.ActionListener() {
@@ -1787,11 +1805,11 @@ try {
         tblCompra.getTableHeader().setReorderingAllowed(false);
         jScrollPane6.setViewportView(tblCompra);
 
-        jpnRegistroCompra.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 280, 660, 210));
+        jpnRegistroCompra.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 290, 660, 210));
 
         txtTotal.setEditable(false);
         txtTotal.setText("$");
-        jpnRegistroCompra.add(txtTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 500, 100, 40));
+        jpnRegistroCompra.add(txtTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 520, 100, 30));
 
         txtFecha.setEditable(false);
         jpnRegistroCompra.add(txtFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 120, 160, 30));
@@ -1825,9 +1843,9 @@ try {
         jpnRegistroCompra.add(jSeparator9, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 95, 70, 20));
 
         lblTotal.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        lblTotal.setText("TOTAL:");
-        jpnRegistroCompra.add(lblTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 500, 50, 40));
-        jpnRegistroCompra.add(jSeparator10, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 529, 40, 40));
+        lblTotal.setText("GRAVADO :");
+        jpnRegistroCompra.add(lblTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 510, 80, 40));
+        jpnRegistroCompra.add(jSeparator10, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 510, 40, 40));
 
         lblCodBarraProd.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblCodBarraProd.setText("Cod Barra:");
@@ -1916,6 +1934,39 @@ try {
             }
         });
         jpnRegistroCompra.add(txtCostoProd, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 190, 80, 30));
+
+        txtTotal1.setEditable(false);
+        txtTotal1.setText("$");
+        jpnRegistroCompra.add(txtTotal1, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 570, 100, 30));
+
+        txtTotal3.setEditable(false);
+        txtTotal3.setText("$");
+        jpnRegistroCompra.add(txtTotal3, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 520, 100, 30));
+
+        txtTotal4.setEditable(false);
+        txtTotal4.setText("$");
+        jpnRegistroCompra.add(txtTotal4, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 560, 100, 30));
+
+        lblTotal1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblTotal1.setText("TOTAL:");
+        jpnRegistroCompra.add(lblTotal1, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 560, 50, 40));
+
+        lblTotal2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblTotal2.setText("Persepcion 1% :");
+        jpnRegistroCompra.add(lblTotal2, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 510, 120, 40));
+
+        lblTotal3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblTotal3.setText("iVA 13% :");
+        jpnRegistroCompra.add(lblTotal3, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 550, 70, 40));
+
+        jRadioButton1.setText("Factura");
+        jpnRegistroCompra.add(jRadioButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 250, -1, -1));
+
+        jRadioButton2.setText("Credito Fiscal");
+        jpnRegistroCompra.add(jRadioButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 250, -1, -1));
+
+        jRadioButton3.setText("Compra Libre");
+        jpnRegistroCompra.add(jRadioButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 250, -1, -1));
 
         getContentPane().add(jpnRegistroCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 50, 730, 600));
 
@@ -2174,11 +2225,11 @@ try {
 
         txtCodBarraProductos1.setEditable(false);
         txtCodBarraProductos1.setBackground(new java.awt.Color(255, 255, 255));
-        jpnDetalleCompra.add(txtCodBarraProductos1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 100, 130, 30));
+        jpnDetalleCompra.add(txtCodBarraProductos1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 70, 130, 30));
 
         txtNombreProductos1.setEditable(false);
         txtNombreProductos1.setBackground(new java.awt.Color(255, 255, 255));
-        jpnDetalleCompra.add(txtNombreProductos1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 160, 390, 30));
+        jpnDetalleCompra.add(txtNombreProductos1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 130, 390, 30));
 
         jPanel47.setBackground(new java.awt.Color(0, 0, 0));
         jPanel47.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -2196,14 +2247,14 @@ try {
         jLabel28.setBackground(new java.awt.Color(0, 0, 0));
         jLabel28.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel28.setText("ID Compra:");
-        jpnDetalleCompra.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 100, -1, 20));
+        jpnDetalleCompra.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 70, -1, 20));
 
         jLabel30.setBackground(new java.awt.Color(0, 0, 0));
         jLabel30.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel30.setText("Proveedor:");
-        jpnDetalleCompra.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 160, -1, 30));
-        jpnDetalleCompra.add(jSeparator30, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 120, 70, 10));
-        jpnDetalleCompra.add(jSeparator31, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 185, 70, 10));
+        jpnDetalleCompra.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 130, -1, 30));
+        jpnDetalleCompra.add(jSeparator30, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 90, 70, 10));
+        jpnDetalleCompra.add(jSeparator31, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 150, 70, 10));
 
         tblDetalleCompra =new javax.swing.JTable(){
             public boolean isCellEditable(int rowIndex, int colIndex){
@@ -2233,12 +2284,12 @@ try {
         jLabel37.setBackground(new java.awt.Color(0, 0, 0));
         jLabel37.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel37.setText("Total:");
-        jpnDetalleCompra.add(jLabel37, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 540, -1, -1));
-        jpnDetalleCompra.add(jSeparator33, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 556, 40, -1));
+        jpnDetalleCompra.add(jLabel37, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 570, -1, -1));
+        jpnDetalleCompra.add(jSeparator33, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 590, 40, 10));
 
         txtTotal2.setEditable(false);
         txtTotal2.setText("$");
-        jpnDetalleCompra.add(txtTotal2, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 530, 100, 40));
+        jpnDetalleCompra.add(txtTotal2, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 560, 100, 40));
 
         btnAtrasDetalleCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/atras.png"))); // NOI18N
         btnAtrasDetalleCompra.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -2259,6 +2310,36 @@ try {
             }
         });
         jpnDetalleCompra.add(btnAtrasDetalleCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 535, 110, 30));
+
+        jLabel42.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel42.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel42.setText("PERSEPCION 1% :");
+        jpnDetalleCompra.add(jLabel42, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 520, -1, -1));
+        jpnDetalleCompra.add(jSeparator44, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 540, 40, -1));
+
+        txtTotal5.setEditable(false);
+        txtTotal5.setText("$");
+        jpnDetalleCompra.add(txtTotal5, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 510, 100, 40));
+
+        jLabel43.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel43.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel43.setText("GRAVADO :");
+        jpnDetalleCompra.add(jLabel43, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 520, -1, -1));
+        jpnDetalleCompra.add(jSeparator45, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 540, 40, -1));
+
+        txtTotal6.setEditable(false);
+        txtTotal6.setText("$");
+        jpnDetalleCompra.add(txtTotal6, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 510, 100, 40));
+        jpnDetalleCompra.add(jSeparator46, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 590, 40, -1));
+
+        txtTotal7.setEditable(false);
+        txtTotal7.setText("$");
+        jpnDetalleCompra.add(txtTotal7, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 560, 100, 40));
+
+        jLabel45.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel45.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel45.setText("IVA 13% :");
+        jpnDetalleCompra.add(jLabel45, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 570, -1, -1));
 
         getContentPane().add(jpnDetalleCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 50, 730, 600));
 
@@ -4369,7 +4450,10 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel42;
+    private javax.swing.JLabel jLabel43;
     private javax.swing.JLabel jLabel44;
+    private javax.swing.JLabel jLabel45;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -4384,6 +4468,9 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JPanel jPanel47;
     private javax.swing.JPanel jPanel48;
     private javax.swing.JPanel jPanel49;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -4425,6 +4512,9 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JSeparator jSeparator41;
     private javax.swing.JSeparator jSeparator42;
     private javax.swing.JSeparator jSeparator43;
+    private javax.swing.JSeparator jSeparator44;
+    private javax.swing.JSeparator jSeparator45;
+    private javax.swing.JSeparator jSeparator46;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSeparator jSeparator7;
@@ -4501,6 +4591,9 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JLabel lblProveedores6;
     private javax.swing.JLabel lblProveedores7;
     private javax.swing.JLabel lblTotal;
+    private javax.swing.JLabel lblTotal1;
+    private javax.swing.JLabel lblTotal2;
+    private javax.swing.JLabel lblTotal3;
     private javax.swing.JTable tblCompra;
     private javax.swing.JTable tblCompras;
     private javax.swing.JTable tblDetalleCompra;
@@ -4544,7 +4637,13 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JLabel txtTelefonoActualProveedor;
     private javax.swing.JTextField txtTelefonoProveedor;
     private javax.swing.JTextField txtTotal;
+    private javax.swing.JTextField txtTotal1;
     private javax.swing.JTextField txtTotal2;
+    private javax.swing.JTextField txtTotal3;
+    private javax.swing.JTextField txtTotal4;
+    private javax.swing.JTextField txtTotal5;
+    private javax.swing.JTextField txtTotal6;
+    private javax.swing.JTextField txtTotal7;
     private javax.swing.JTextField txtTotalventa;
     // End of variables declaration//GEN-END:variables
 
