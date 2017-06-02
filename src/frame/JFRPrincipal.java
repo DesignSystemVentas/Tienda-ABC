@@ -941,7 +941,6 @@ try {
         lblIdVenta = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
-        jSeparator22 = new javax.swing.JSeparator();
         lblIVA = new javax.swing.JLabel();
         txtCodigoBarraVender = new javax.swing.JTextField();
         jLabel22 = new javax.swing.JLabel();
@@ -950,6 +949,9 @@ try {
         jLabel40 = new javax.swing.JLabel();
         txtSumas = new javax.swing.JTextField();
         jLabel41 = new javax.swing.JLabel();
+        jComboBox2 = new javax.swing.JComboBox();
+        jLabel26 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
         jpnCompras = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         tblCompras = new javax.swing.JTable();
@@ -1128,8 +1130,9 @@ try {
         btnHacerVenta = new javax.swing.JButton();
         jPanel49 = new javax.swing.JPanel();
         lblProveedores7 = new javax.swing.JLabel();
-        txtCodigoBarraVender1 = new javax.swing.JTextField();
         jLabel44 = new javax.swing.JLabel();
+        btnGenerar = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setIconImage(new javax.swing.ImageIcon(getClass().getResource("/iconos/lanzador.png")).getImage());
@@ -1438,7 +1441,7 @@ try {
 
         jSeparator2.setBackground(new java.awt.Color(0, 0, 0));
         jSeparator2.setForeground(new java.awt.Color(0, 0, 0));
-        jpnVentas.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 220, 750, 10));
+        jpnVentas.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 220, 720, 10));
 
         tblProductosVender.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1514,7 +1517,7 @@ try {
 
         txtNombreProductoVender.setEditable(false);
         txtNombreProductoVender.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jpnVentas.add(txtNombreProductoVender, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 120, 320, 40));
+        jpnVentas.add(txtNombreProductoVender, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 120, 300, 40));
 
         txtCantidadVender.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         txtCantidadVender.addActionListener(new java.awt.event.ActionListener() {
@@ -1530,7 +1533,7 @@ try {
                 txtCantidadVenderKeyTyped(evt);
             }
         });
-        jpnVentas.add(txtCantidadVender, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 120, 60, 40));
+        jpnVentas.add(txtCantidadVender, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 120, 60, 40));
 
         jPanel44.setBackground(new java.awt.Color(0, 0, 0));
         jPanel44.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -1547,7 +1550,7 @@ try {
         lblFechaVentas.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblFechaVentas.setForeground(new java.awt.Color(255, 255, 255));
         lblFechaVentas.setText("Fecha:");
-        jPanel44.add(lblFechaVentas, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 20, 60, -1));
+        jPanel44.add(lblFechaVentas, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 10, 60, -1));
 
         txtClienteVenta.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         txtClienteVenta.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 2, true));
@@ -1574,23 +1577,22 @@ try {
                 lblFechaVentaMostrarActionPerformed(evt);
             }
         });
-        jPanel44.add(lblFechaVentaMostrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 40, 80, 20));
+        jPanel44.add(lblFechaVentaMostrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 30, 80, 30));
 
         lblIdVenta.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblIdVenta.setForeground(new java.awt.Color(255, 255, 255));
         lblIdVenta.setText("ID Venta");
         jPanel44.add(lblIdVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 10, 70, -1));
 
-        jpnVentas.add(jPanel44, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 750, 70));
+        jpnVentas.add(jPanel44, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 730, 70));
 
         jLabel21.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel21.setText("Producto");
-        jpnVentas.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 100, -1, -1));
+        jLabel21.setText("Tienda");
+        jpnVentas.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 100, -1, -1));
 
         jLabel16.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel16.setText("Cantidad");
-        jpnVentas.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 100, -1, -1));
-        jpnVentas.add(jSeparator22, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 120, 60, -1));
+        jLabel16.setText("Tipo Faxturacion");
+        jpnVentas.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 100, -1, -1));
 
         lblIVA.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblIVA.setText("IVA");
@@ -1614,14 +1616,14 @@ try {
                 txtCodigoBarraVenderKeyReleased(evt);
             }
         });
-        jpnVentas.add(txtCodigoBarraVender, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 130, 40));
+        jpnVentas.add(txtCodigoBarraVender, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 120, 130, 40));
 
         jLabel22.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel22.setText("Código de Barra");
-        jpnVentas.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, -1, -1));
+        jpnVentas.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, -1, -1));
 
-        cmbTipoFactura.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Consumidor Final", "Credito Fiscal", "Libre", " " }));
-        jpnVentas.add(cmbTipoFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 120, 130, -1));
+        cmbTipoFactura.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "CONSUMIDOR FINAL", "CREDITO FISCAL", "LIBRE" }));
+        jpnVentas.add(cmbTipoFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 120, -1, 40));
         jpnVentas.add(txtIVA, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 480, 140, -1));
 
         jLabel40.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -1632,6 +1634,17 @@ try {
         jLabel41.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel41.setText("TOTAL");
         jpnVentas.add(jLabel41, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 510, -1, -1));
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "TIENDA ABC" }));
+        jpnVentas.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 90, 40));
+
+        jLabel26.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel26.setText("Producto");
+        jpnVentas.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 100, -1, -1));
+
+        jLabel19.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel19.setText("Cantidad");
+        jpnVentas.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 100, -1, -1));
 
         getContentPane().add(jpnVentas, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 50, 730, 600));
 
@@ -2784,7 +2797,7 @@ try {
         tblVentas.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(tblVentas);
 
-        jpnVentasPrincipal.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 250, 670, 270));
+        jpnVentasPrincipal.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 250, 670, 230));
 
         btnHacerVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/agregar2.png"))); // NOI18N
         btnHacerVenta.setToolTipText("Eliminar Productos Seleccionados");
@@ -2802,7 +2815,7 @@ try {
                 btnHacerVentaActionPerformed(evt);
             }
         });
-        jpnVentasPrincipal.add(btnHacerVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 100, 110, 30));
+        jpnVentasPrincipal.add(btnHacerVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 540, 110, 30));
 
         jPanel49.setBackground(new java.awt.Color(0, 0, 0));
         jPanel49.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -2815,29 +2828,15 @@ try {
 
         jpnVentasPrincipal.add(jPanel49, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 70));
 
-        txtCodigoBarraVender1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtCodigoBarraVender1FocusGained(evt);
-            }
-        });
-        txtCodigoBarraVender1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCodigoBarraVender1ActionPerformed(evt);
-            }
-        });
-        txtCodigoBarraVender1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtCodigoBarraVender1KeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtCodigoBarraVender1KeyReleased(evt);
-            }
-        });
-        jpnVentasPrincipal.add(txtCodigoBarraVender1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 120, 160, 40));
-
         jLabel44.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel44.setText("IdVenta / Fecha de Venta");
-        jpnVentasPrincipal.add(jLabel44, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 100, 170, -1));
+        jLabel44.setText("Fecha de Venta");
+        jpnVentasPrincipal.add(jLabel44, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 100, 160, -1));
+
+        btnGenerar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/buscar.png"))); // NOI18N
+        jpnVentasPrincipal.add(btnGenerar, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 120, 110, 30));
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE" }));
+        jpnVentasPrincipal.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 120, 100, -1));
 
         getContentPane().add(jpnVentasPrincipal, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 50, 730, 600));
 
@@ -2931,8 +2930,7 @@ try {
         apagado();
         apagado2();
         jpnVentasPrincipal.setVisible(true);
-        contarRegistro();
-         txtCodigoBarraVender.requestFocus();
+        contarRegistro();        
          //          para generar la fecha automatica e insertar en la tabla compras de la base de datos
          Calendar calendar = Calendar.getInstance();
          dia = calendar.get(Calendar.DATE);
@@ -3078,11 +3076,11 @@ try {
     }//GEN-LAST:event_btnAtrasDetalleCompraMouseClicked
 
     private void btnLimpiarTablaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLimpiarTablaMouseEntered
-        btnLimpiarTabla.setIcon(new ImageIcon(getClass().getResource("/iconos/buscarB.png")));
+//        btnLimpiarTabla.setIcon(new ImageIcon(getClass().getResource("/iconos/buscarB.png")));
     }//GEN-LAST:event_btnLimpiarTablaMouseEntered
 
     private void btnLimpiarTablaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLimpiarTablaMouseExited
-        btnLimpiarTabla.setIcon(new ImageIcon(getClass().getResource("/iconos/buscar.png")));
+//        btnLimpiarTabla.setIcon(new ImageIcon(getClass().getResource("/iconos/buscar.png")));
     }//GEN-LAST:event_btnLimpiarTablaMouseExited
 
     private void btnCancelarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseEntered
@@ -4243,24 +4241,8 @@ txtNuevoNIT.requestFocus();
     private void btnHacerVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHacerVentaActionPerformed
         jpnVentas.setVisible(true);
         jpnVentasPrincipal.setVisible(false);
-        
+        txtCodigoBarraVender.requestFocus();
     }//GEN-LAST:event_btnHacerVentaActionPerformed
-
-    private void txtCodigoBarraVender1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodigoBarraVender1FocusGained
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCodigoBarraVender1FocusGained
-
-    private void txtCodigoBarraVender1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoBarraVender1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCodigoBarraVender1ActionPerformed
-
-    private void txtCodigoBarraVender1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoBarraVender1KeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCodigoBarraVender1KeyPressed
-
-    private void txtCodigoBarraVender1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoBarraVender1KeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCodigoBarraVender1KeyReleased
 
     private void txtIdVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdVentaActionPerformed
         // TODO add your handling code here:
@@ -4401,6 +4383,7 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JButton btnEliminarProducto;
     private javax.swing.JButton btnEliminarProductoVenta;
     private javax.swing.JButton btnEliminarProveedor;
+    private javax.swing.JButton btnGenerar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnGuardarModificarProveedor;
     private javax.swing.JButton btnGuardarProveedor;
@@ -4419,6 +4402,8 @@ txtNuevoNIT.requestFocus();
     private javax.swing.ButtonGroup btngFiltroProductos;
     private javax.swing.JComboBox cmbProveedor;
     private javax.swing.JComboBox cmbTipoFactura;
+    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -4428,12 +4413,14 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
@@ -4491,7 +4478,6 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator20;
     private javax.swing.JSeparator jSeparator21;
-    private javax.swing.JSeparator jSeparator22;
     private javax.swing.JSeparator jSeparator25;
     private javax.swing.JSeparator jSeparator26;
     private javax.swing.JSeparator jSeparator27;
@@ -4607,7 +4593,6 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JTextField txtCodBarraProductos;
     private javax.swing.JTextField txtCodBarraProductos1;
     private javax.swing.JTextField txtCodigoBarraVender;
-    private javax.swing.JTextField txtCodigoBarraVender1;
     private javax.swing.JTextField txtCostoProd;
     private javax.swing.JLabel txtDireccionActualProveedor;
     private javax.swing.JTextField txtDireccionProveedor;
