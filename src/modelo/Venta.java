@@ -1,10 +1,12 @@
 package modelo;
 
+import controlador.Conexion;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import controlador.ErrorTienda;
+import java.sql.ResultSet;
 
 /**
  *
@@ -108,7 +110,7 @@ public class Venta {
          }catch (ArrayIndexOutOfBoundsException e) {
          throw new ErrorTienda("Calcular total-Controlador.Venta.CalcularTotal()"+e.getMessage());
          }
-         
-       
+                
     }
+    
 }

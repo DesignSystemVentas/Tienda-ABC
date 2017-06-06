@@ -38,6 +38,7 @@ import modelo.DetalleVenta;
 import modelo.Parametro;
 import modelo.Producto;
 import modelo.Proveedor;
+import modelo.Venta;
 
 
 public final class JFRPrincipal extends javax.swing.JFrame {
@@ -50,6 +51,7 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     ArrayList<String> columnas= new ArrayList<>();
     DefaultTableModel modeloAddVenta = new DefaultTableModel();
     DefaultTableModel modeloVenta = new DefaultTableModel();
+    DefaultTableModel ReporteVenta = new DefaultTableModel();
     DefaultTableModel modEliminar;
     
     ResultSet rstControladorVenta = null;
@@ -57,6 +59,10 @@ public final class JFRPrincipal extends javax.swing.JFrame {
     
     ResultSet rstDetalleVenta = null;
     DetalleVenta dv = new DetalleVenta();
+    
+    ResultSet rstVenta = null;
+    Venta rventa = new Venta();
+    
     
     ResultSet rstControladorProducto = null;
     ControladorProducto cp = new ControladorProducto();
@@ -372,6 +378,7 @@ int columnasDeTabla, columna;
     //Datos para compra
     String datosCompra[] = new String[5];
     String datosVenta[] = new String[4];
+    String reporteVenta[] = new String[4];
     ResultSet rsCompra =null;
     ResultSet rs = null;
     DefaultTableModel modeloCompra = new DefaultTableModel();
@@ -463,6 +470,12 @@ int columnasDeTabla, columna;
         modeloVenta.addColumn("Cliente");
         modeloVenta.addColumn("Total");
         tblVentas.setModel(modeloVenta);
+        //llenado de tabla Venta
+        ReporteVenta.addColumn("Dia");
+        ReporteVenta.addColumn("Documentos emitidos");
+        ReporteVenta.addColumn("No. de caja autorizada");
+        ReporteVenta.addColumn("Total de Ventas");
+        tblReporteVenta.setModel(ReporteVenta);
         //VIZCARRA        
         tblCompras.setModel(modeloCompra);
         RowSorter<TableModel> sorter1 = new TableRowSorter<TableModel>(modeloCompra);
@@ -532,9 +545,8 @@ int columnasDeTabla, columna;
         //    cn.desconectar();
         }
     }
-    
-    public void llenarTablaVenta(){
-                    //VIZCARRA//
+    //VIZCARRA//
+    public void llenarTablaVenta(){                    
         // LLENAR LA TABLA VENTAS (tblVentas)//         
 try {            
             try {
@@ -556,9 +568,12 @@ try {
         }catch (SQLException ex) {
             JOptionPane.showMessageDialog(rootPane, ex.getMessage(), "Error", 0);
         }        
+    }
+    public void llenarReporteVenta () {
+        
+    }
 //***********************************//  
         //VIZCARRA//
-    }
    
     public void llenarTablaCompra()
     {
@@ -952,6 +967,10 @@ try {
         jComboBox2 = new javax.swing.JComboBox();
         jLabel26 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
+        txtTotalventa1 = new javax.swing.JTextField();
+        jLabel46 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        jLabel35 = new javax.swing.JLabel();
         jpnCompras = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         tblCompras = new javax.swing.JTable();
@@ -1132,7 +1151,15 @@ try {
         lblProveedores7 = new javax.swing.JLabel();
         jLabel44 = new javax.swing.JLabel();
         btnGenerar = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox();
+        cmbFechaMes = new javax.swing.JComboBox();
+        jpnReporteVenta = new javax.swing.JPanel();
+        jSeparator47 = new javax.swing.JSeparator();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        tblReporteVenta = new javax.swing.JTable();
+        btnHacerVenta1 = new javax.swing.JButton();
+        jPanel50 = new javax.swing.JPanel();
+        lblProveedores9 = new javax.swing.JLabel();
+        lblProveedores8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setIconImage(new javax.swing.ImageIcon(getClass().getResource("/iconos/lanzador.png")).getImage());
@@ -1441,7 +1468,7 @@ try {
 
         jSeparator2.setBackground(new java.awt.Color(0, 0, 0));
         jSeparator2.setForeground(new java.awt.Color(0, 0, 0));
-        jpnVentas.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 220, 720, 10));
+        jpnVentas.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 720, 10));
 
         tblProductosVender.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1454,7 +1481,7 @@ try {
         tblProductosVender.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(tblProductosVender);
 
-        jpnVentas.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 710, 190));
+        jpnVentas.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 710, 250));
 
         btnVender.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         btnVender.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/vender.png"))); // NOI18N
@@ -1472,7 +1499,7 @@ try {
                 btnVenderActionPerformed(evt);
             }
         });
-        jpnVentas.add(btnVender, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 540, 110, 30));
+        jpnVentas.add(btnVender, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 540, 110, 30));
 
         btnEliminarProductoVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/eliminarB.png"))); // NOI18N
         btnEliminarProductoVenta.setToolTipText("Eliminar Productos Seleccionados");
@@ -1490,10 +1517,10 @@ try {
                 btnEliminarProductoVentaActionPerformed(evt);
             }
         });
-        jpnVentas.add(btnEliminarProductoVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 540, 110, 30));
+        jpnVentas.add(btnEliminarProductoVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 540, 110, 30));
 
         btnLimpiarTabla.setBackground(new java.awt.Color(255, 255, 255));
-        btnLimpiarTabla.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/eliminar.png"))); // NOI18N
+        btnLimpiarTabla.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/atrasB.png"))); // NOI18N
         btnLimpiarTabla.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnLimpiarTabla.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -1508,16 +1535,16 @@ try {
                 btnLimpiarTablaActionPerformed(evt);
             }
         });
-        jpnVentas.add(btnLimpiarTabla, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 540, 110, 30));
+        jpnVentas.add(btnLimpiarTabla, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 540, 110, 30));
 
         txtTotalventa.setEditable(false);
         txtTotalventa.setBackground(new java.awt.Color(255, 255, 255));
         txtTotalventa.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jpnVentas.add(txtTotalventa, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 510, 140, 20));
+        jpnVentas.add(txtTotalventa, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 540, 90, 20));
 
         txtNombreProductoVender.setEditable(false);
         txtNombreProductoVender.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jpnVentas.add(txtNombreProductoVender, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 120, 300, 40));
+        jpnVentas.add(txtNombreProductoVender, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 120, 270, 40));
 
         txtCantidadVender.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         txtCantidadVender.addActionListener(new java.awt.event.ActionListener() {
@@ -1587,8 +1614,8 @@ try {
         jpnVentas.add(jPanel44, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 730, 70));
 
         jLabel21.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel21.setText("Tienda");
-        jpnVentas.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 100, -1, -1));
+        jLabel21.setText("Utilidad");
+        jpnVentas.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, -1, -1));
 
         jLabel16.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel16.setText("Tipo Faxturacion");
@@ -1596,7 +1623,7 @@ try {
 
         lblIVA.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblIVA.setText("IVA");
-        jpnVentas.add(lblIVA, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 480, -1, -1));
+        jpnVentas.add(lblIVA, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 510, -1, -1));
 
         txtCodigoBarraVender.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1616,35 +1643,51 @@ try {
                 txtCodigoBarraVenderKeyReleased(evt);
             }
         });
-        jpnVentas.add(txtCodigoBarraVender, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 120, 130, 40));
+        jpnVentas.add(txtCodigoBarraVender, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 120, 130, 40));
 
         jLabel22.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel22.setText("Código de Barra");
-        jpnVentas.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, -1, -1));
+        jpnVentas.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 100, -1, -1));
 
         cmbTipoFactura.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "CONSUMIDOR FINAL", "CREDITO FISCAL", "LIBRE" }));
         jpnVentas.add(cmbTipoFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 120, -1, 40));
-        jpnVentas.add(txtIVA, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 480, 140, -1));
+        jpnVentas.add(txtIVA, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 510, 90, -1));
 
         jLabel40.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel40.setText("SUMAS");
-        jpnVentas.add(jLabel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 450, -1, -1));
-        jpnVentas.add(txtSumas, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 450, 140, -1));
+        jpnVentas.add(jLabel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 480, -1, -1));
+        jpnVentas.add(txtSumas, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 480, 90, -1));
 
         jLabel41.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel41.setText("TOTAL");
-        jpnVentas.add(jLabel41, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 510, -1, -1));
+        jpnVentas.add(jLabel41, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 570, -1, -1));
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "TIENDA ABC" }));
-        jpnVentas.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 90, 40));
+        jpnVentas.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 120, 40));
 
         jLabel26.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel26.setText("Producto");
-        jpnVentas.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 100, -1, -1));
+        jpnVentas.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 100, -1, -1));
 
         jLabel19.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel19.setText("Cantidad");
         jpnVentas.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 100, -1, -1));
+
+        txtTotalventa1.setEditable(false);
+        txtTotalventa1.setBackground(new java.awt.Color(255, 255, 255));
+        txtTotalventa1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jpnVentas.add(txtTotalventa1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 570, 90, 20));
+
+        jLabel46.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel46.setText("PERCEPCIÓN");
+        jpnVentas.add(jLabel46, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 540, -1, 20));
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "25%", "60%", "1.25%" }));
+        jpnVentas.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 180, 120, -1));
+
+        jLabel35.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel35.setText("Sucursal");
+        jpnVentas.add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 100, -1, -1));
 
         getContentPane().add(jpnVentas, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 50, 730, 600));
 
@@ -2833,12 +2876,77 @@ try {
         jpnVentasPrincipal.add(jLabel44, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 100, 160, -1));
 
         btnGenerar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/buscar.png"))); // NOI18N
+        btnGenerar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarActionPerformed(evt);
+            }
+        });
         jpnVentasPrincipal.add(btnGenerar, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 120, 110, 30));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE" }));
-        jpnVentasPrincipal.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 120, 100, -1));
+        cmbFechaMes.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE" }));
+        cmbFechaMes.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cmbFechaMesKeyPressed(evt);
+            }
+        });
+        jpnVentasPrincipal.add(cmbFechaMes, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 120, 100, -1));
 
         getContentPane().add(jpnVentasPrincipal, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 50, 730, 600));
+
+        jpnReporteVenta.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jSeparator47.setBackground(new java.awt.Color(0, 0, 0));
+        jSeparator47.setForeground(new java.awt.Color(0, 0, 0));
+        jpnReporteVenta.add(jSeparator47, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 130, 670, 10));
+
+        tblReporteVenta.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        tblReporteVenta.getTableHeader().setReorderingAllowed(false);
+        jScrollPane8.setViewportView(tblReporteVenta);
+
+        jpnReporteVenta.add(jScrollPane8, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 150, 660, 270));
+
+        btnHacerVenta1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/salir.png"))); // NOI18N
+        btnHacerVenta1.setToolTipText("Eliminar Productos Seleccionados");
+        btnHacerVenta1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnHacerVenta1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnHacerVenta1MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnHacerVenta1MouseExited(evt);
+            }
+        });
+        btnHacerVenta1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHacerVenta1ActionPerformed(evt);
+            }
+        });
+        jpnReporteVenta.add(btnHacerVenta1, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 430, 110, 30));
+
+        jPanel50.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel50.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lblProveedores9.setBackground(new java.awt.Color(255, 255, 255));
+        lblProveedores9.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        lblProveedores9.setForeground(new java.awt.Color(255, 255, 255));
+        lblProveedores9.setText("Reporte Venta");
+        jPanel50.add(lblProveedores9, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 150, 50));
+
+        jpnReporteVenta.add(jPanel50, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 70));
+
+        lblProveedores8.setBackground(new java.awt.Color(255, 255, 255));
+        lblProveedores8.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        lblProveedores8.setText("LIBRO O REGISTRO DE OPERACIONES DE VENTAS A CONSUMIDORES.");
+        jpnReporteVenta.add(lblProveedores8, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 660, 50));
+
+        getContentPane().add(jpnReporteVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 50, 730, 600));
 
         pack();
         setLocationRelativeTo(null);
@@ -4333,6 +4441,59 @@ txtNuevoNIT.requestFocus();
         btnEliminarProductoVenta.setIcon(new ImageIcon(getClass().getResource("/iconos/eliminarB.png")));
     }//GEN-LAST:event_btnEliminarProductoVentaMouseEntered
 
+    private void cmbFechaMesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbFechaMesKeyPressed
+        if (evt.getKeyCode()==java.awt.event.KeyEvent.VK_ENTER){
+            jpnReporteVenta.setVisible(true);            
+        jpnVentasPrincipal.setVisible(false);
+            //tomar la posicion del mes
+        int posicionMes=cmbFechaMes.getSelectedIndex();
+           //para cada mes mostrar esos campos
+            if (posicionMes==0) {
+                
+            }else if (posicionMes==1) {
+                
+            }else if (posicionMes==2) {
+                
+            }else if (posicionMes==3) {
+                
+            }else if (posicionMes==4) {
+                
+            }else if (posicionMes==5) {
+                
+            }else if (posicionMes==6) {
+                
+            }else if (posicionMes==7) {
+                
+            }else if (posicionMes==8) {
+                
+            }else if (posicionMes==9) {
+                
+            }else if (posicionMes==10) {
+                
+            }else if (posicionMes==11) {
+                
+            }
+            
+        }
+    }//GEN-LAST:event_cmbFechaMesKeyPressed
+
+    private void btnHacerVenta1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnHacerVenta1MouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnHacerVenta1MouseEntered
+
+    private void btnHacerVenta1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnHacerVenta1MouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnHacerVenta1MouseExited
+
+    private void btnHacerVenta1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHacerVenta1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnHacerVenta1ActionPerformed
+
+    private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
+        jpnReporteVenta.setVisible(true);
+        jpnVentasPrincipal.setVisible(false);
+    }//GEN-LAST:event_btnGenerarActionPerformed
+
 
     /**
      * @param args the command line arguments
@@ -4388,6 +4549,7 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JButton btnGuardarModificarProveedor;
     private javax.swing.JButton btnGuardarProveedor;
     private javax.swing.JButton btnHacerVenta;
+    private javax.swing.JButton btnHacerVenta1;
     private javax.swing.JLabel btnHome;
     private javax.swing.JButton btnLimpiarTabla;
     private javax.swing.JButton btnModificarProducto;
@@ -4400,6 +4562,7 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JButton btnVentas;
     private javax.swing.JButton btnVerDetalle;
     private javax.swing.ButtonGroup btngFiltroProductos;
+    private javax.swing.JComboBox cmbFechaMes;
     private javax.swing.JComboBox cmbProveedor;
     private javax.swing.JComboBox cmbTipoFactura;
     private javax.swing.JComboBox jComboBox1;
@@ -4430,6 +4593,7 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel38;
@@ -4441,6 +4605,7 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JLabel jLabel43;
     private javax.swing.JLabel jLabel44;
     private javax.swing.JLabel jLabel45;
+    private javax.swing.JLabel jLabel46;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -4455,6 +4620,7 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JPanel jPanel47;
     private javax.swing.JPanel jPanel48;
     private javax.swing.JPanel jPanel49;
+    private javax.swing.JPanel jPanel50;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
@@ -4465,6 +4631,7 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JSeparator jSeparator10;
     private javax.swing.JSeparator jSeparator11;
     private javax.swing.JSeparator jSeparator12;
@@ -4501,6 +4668,7 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JSeparator jSeparator44;
     private javax.swing.JSeparator jSeparator45;
     private javax.swing.JSeparator jSeparator46;
+    private javax.swing.JSeparator jSeparator47;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSeparator jSeparator7;
@@ -4520,6 +4688,7 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JPanel jpnProveedores;
     private javax.swing.JPanel jpnQuinto;
     private javax.swing.JPanel jpnRegistroCompra;
+    private javax.swing.JPanel jpnReporteVenta;
     private javax.swing.JPanel jpnSegundo;
     private javax.swing.JPanel jpnSubMenu;
     private javax.swing.JPanel jpnTercero;
@@ -4576,6 +4745,8 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JLabel lblProveedores5;
     private javax.swing.JLabel lblProveedores6;
     private javax.swing.JLabel lblProveedores7;
+    private javax.swing.JLabel lblProveedores8;
+    private javax.swing.JLabel lblProveedores9;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JLabel lblTotal1;
     private javax.swing.JLabel lblTotal2;
@@ -4585,6 +4756,7 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JTable tblDetalleCompra;
     private javax.swing.JTable tblProductosVender;
     private javax.swing.JTable tblProveedores;
+    private javax.swing.JTable tblReporteVenta;
     private javax.swing.JTable tblVentas;
     private javax.swing.JTextField txtCantidad;
     private javax.swing.JTextField txtCantidadVender;
@@ -4630,6 +4802,7 @@ txtNuevoNIT.requestFocus();
     private javax.swing.JTextField txtTotal6;
     private javax.swing.JTextField txtTotal7;
     private javax.swing.JTextField txtTotalventa;
+    private javax.swing.JTextField txtTotalventa1;
     // End of variables declaration//GEN-END:variables
 
     private void setVisible(JPopupMenu MenuEmergente) {
